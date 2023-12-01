@@ -1,0 +1,20 @@
+leg:
+  orientation: 3.141592653589793 0.0 0.0
+  position: 0.0 0.0 0.0
+  color: 1 1 1 1
+body: 
+  orientation: 0.0 0.0 0.0
+  position: 0.0 0.0 0.0
+  color: 1 1 1 1
+reactionwheel: 
+  orientation: 0.0 0.0 3.141592653589793
+  position: 0.0 0.0 0.0
+  color: 1 1 1 1
+propeller_1:
+  orientation: 0.0 0.0 0.0
+  position: 0.0 0.0 0.0
+  color: 1 1 1 1 
+propeller_2:
+  orientation: 0.0 0.0 0.0
+  position: 0.0 0.0 0.0
+  color: 1 1 1 1 

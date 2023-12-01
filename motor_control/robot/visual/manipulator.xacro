@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+    <xacro:macro name="base_visual" params="xyz rpy R l">
+        <visual>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <geometry>
+                <cylinder radius="${R}" length="${l}"/>
+            </geometry>
+            <material name="based_color">
+                <color rgba="1 0.2 0.2 1"/>
+            </material>
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="cylinderSolid" params="link_id xyz rpy R l">
+        <visual>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <geometry>
+                <cylinder radius="${R}" length="${l}"/>
+            </geometry>
+            <material name="link_color_${link_id}">
+                <color rgba="0.2 1 0.2 1"/>
+            </material>
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="brickSolid" params="link_id size xyz rpy">
+        <visual>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <geometry>
+                <box size="${size}"/>
+            </geometry>
+            <material name="link_color_${link_id}">
+                <color rgba="1 0.2 0.2 1"/>
+            </material>
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="rigidTransform" params="curr_link next_link xyz rpy">
+        <joint name="rigidTransform_${curr_link}_to_${next_link}" type="fixed">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${curr_link}"/>
+            <child link="${next_link}"/>
+        </joint>
+    </xacro:macro>
+
+    <xacro:macro name="revoluteJoint" params="id curr_link next_link xyz rpy">
+        <joint name="revoluteJoint_${id}" type="revolute">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${curr_link}"/>
+            <child link="${next_link}"/>
+            <axis xyz="0 0 1"/>     
+            <limit 
+                lower="-3.14152" 
+                upper="3.14152" 
+                velocity="1000.0" 
+                effort="1000.0"/>     
+        </joint>
+    </xacro:macro>
+</robot>

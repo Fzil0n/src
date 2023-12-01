@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:macro name="sensor_link" params="">
+        <link name="imu_link"/>
+        
+        <joint name="imu_offset" type="fixed">
+            <parent link="${SENSOR['imu']['link']}"/>
+            <child link="imu_link"/>
+            <origin xyz="${SENSOR['imu']['position']}" rpy="${SENSOR['imu']['orientation']}"/>
+        </joint>
+    </xacro:macro>
+
+</robot>

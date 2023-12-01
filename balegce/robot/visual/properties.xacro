@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="example">
+ 
+  <xacro:property name="description_package" value="balegce"/>
+  
+  <!-- File paths-->
+  <xacro:property name="kinematics_params_path" value="$(find ${description_package})/config/kinematics_parameters.yaml"/> 
+  <xacro:property name="visual_params_path" value="$(find ${description_package})/config/visual_parameters.yaml"/> 
+  <xacro:property name="sensor_params_path" value="$(find ${description_package})/config/sensor_parameters.yaml"/> 
+  <xacro:property name="dynamics_params_path" value="$(find ${description_package})/config/dynamics_parameters.yaml"/>
+  <xacro:property name="collision_params_path" value="$(find ${description_package})/config/collision_parameters.yaml"/> 
+  
+  <xacro:property name="kp" value="${xacro.load_yaml(kinematics_params_path)}"/> 
+  <xacro:property name="vp" value="${xacro.load_yaml(visual_params_path)}"/> 
+  <xacro:property name="sp" value="${xacro.load_yaml(sensor_params_path)}"/> 
+  <xacro:property name="dp" value="${xacro.load_yaml(dynamics_params_path)}"/> 
+  <xacro:property name="cp" value="${xacro.load_yaml(collision_params_path)}"/> 
+  
+  <!-- Mathematics Constants -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  <!-- Manipulator Visual Properties -->
+  <xacro:property name="SENSOR" value="${sp}"/>
+  <!-- link -->
+  <xacro:property name="LEG_VISUAL" value="${vp['leg']}"/>
+  <xacro:property name="BODY_VISUAL" value="${vp['body']}"/>
+  <xacro:property name="REACTIONWHEEL_VISUAL" value="${vp['reactionwheel']}"/>
+  <xacro:property name="PROPELLER_1_VISUAL" value="${vp['propeller_1']}"/>
+  <xacro:property name="PROPELLER_2_VISUAL" value="${vp['propeller_2']}"/>
+
+  <!-- joint-->
+  <xacro:property name="BASE" value="${kp['base']}"/>
+  <xacro:property name="JOINT_BODY" value="${kp['joint_body']}"/>
+  <xacro:property name="JOINT_WHEEL" value="${kp['joint_wheel']}"/>
+  <xacro:property name="JOINT_PROPELLER_1" value="${kp['joint_propeller_1']}"/>
+  <xacro:property name="JOINT_PROPELLER_2" value="${kp['joint_propeller_2']}"/>
+
+  <!-- dynamic(inertial)-->
+  <xacro:property name="LEG_INERTIAL" value="${dp['leg']}"/>
+  <xacro:property name="BODY_INERTIAL" value="${dp['body']}"/>
+  <xacro:property name="REACTIONWHEEL_INERTIAL" value="${dp['reactionwheel']}"/>
+  <xacro:property name="PROPELLER_INERTIAL" value="${dp['propeller']}"/>
+
+   <!-- collision-->
+  <xacro:property name="LEG_COLLISION" value="${cp['leg']}"/>
+  <xacro:property name="BODY_COLLISION" value="${cp['body']}"/>
+  <xacro:property name="REACTIONWHEEL_COLLISION" value="${cp['reactionwheel']}"/>
+  <xacro:property name="PROPELLER_COLLISION" value="${cp['propeller']}"/>
+
+<!--   
+  <xacro:property name="SENSOR" value="${sp}"/> -->
+  
+</robot>

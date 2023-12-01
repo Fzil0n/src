@@ -1,0 +1,16 @@
+leg:
+  orientation: 3.141592653589793 0.0 0.0
+  position: 0.0 0.0 0.0
+  size: 0.01 0.01 0.15
+body:
+  orientation: 0.0 0.0 0.0
+  position: 0.0 0.0 0.0
+  size: 0.058 0.10536 0.160
+reactionwheel: 
+  orientation: 0.0 0.0 3.141592653589793
+  position: 0.0 0.0 0.0
+  size: 0.280 0.018 0.008
+propeller:
+  orientation: 0.0 0.0 0.0
+  position: 0.0 0.0 0.0 
+  size: 0.055 0.0065 0.00425
