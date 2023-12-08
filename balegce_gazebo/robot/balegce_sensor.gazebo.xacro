@@ -3,13 +3,47 @@
 
     <xacro:macro name="sensor_plugins" params="">
         <!--joint ideal sensor-->
+        <!-- joint_body -->
         <gazebo>
-            <plugin name="joint_state_publisher"
+            <plugin name="joint_body_state_publisher"
                 filename="libgazebo_ros_joint_state_publisher.so">
                 <update_rate>20.0</update_rate>
-                <joint_name>joint_1</joint_name>
+                <joint_name>joint_body</joint_name>
                 <ros>
-                    <remapping>/joint_states:=joint_states</remapping>
+                    <remapping>/joint_states:=joint_body_states</remapping>
+                </ros>
+            </plugin>
+        </gazebo>
+        <!-- joint_wheel -->
+        <gazebo>
+            <plugin name="joint_wheel_state_publisher"
+                filename="libgazebo_ros_joint_state_publisher.so">
+                <update_rate>20.0</update_rate>
+                <joint_name>joint_wheel</joint_name>
+                <ros>
+                    <remapping>/joint_states:=joint_wheel_states</remapping>
+                </ros>
+            </plugin>
+        </gazebo>
+        <!-- joint_propeller_1 -->
+        <gazebo>
+            <plugin name="joint_propeller_1_state_publisher"
+                filename="libgazebo_ros_joint_state_publisher.so">
+                <update_rate>20.0</update_rate>
+                <joint_name>joint_propeller_1</joint_name>
+                <ros>
+                    <remapping>/joint_states:=joint_propeller_1_states</remapping>
+                </ros>
+            </plugin>
+        </gazebo>
+        <!-- joint_propeller_2 -->
+        <gazebo>
+            <plugin name="joint_propeller_2_state_publisher"
+                filename="libgazebo_ros_joint_state_publisher.so">
+                <update_rate>20.0</update_rate>
+                <joint_name>joint_propeller_2</joint_name>
+                <ros>
+                    <remapping>/joint_states:=joint_propeller_2_states</remapping>
                 </ros>
             </plugin>
         </gazebo>
