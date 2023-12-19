@@ -4,7 +4,7 @@ base:
 joint_body:
   types: prismatic
   orientation: 0 0.0 0.0
-  position: 0.0 0.0 -0.145
+  position: 0.0 0.0 0.005
   lower: 0.0
   upper: 0.065
   velocity: 1000.0

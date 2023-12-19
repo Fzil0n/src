@@ -1,5 +1,5 @@
 leg:
-  orientation: 0.0 0.0 0.0
+  orientation: 3.141592653589793 0.0 0.0
   position: 0.0 0.0 0.0
   color: 1 1 1 1
 body: 
