@@ -254,7 +254,13 @@
             <xacro:propeller_inertial />
             <xacro:propeller_2_collision />
         </link>
+        <link name="end_leg"/>
 
+        <joint name="joint_end_leg" type="fixed">
+            <parent link="leg"/>
+            <child link="end_leg"/>
+            <origin xyz="0.0 0.0 -0.145" rpy="0.0 0.0 0.0"/>
+        </joint>
         <xacro:base_offset/>
         <xacro:joint_body/>
         <xacro:joint_wheel/>
