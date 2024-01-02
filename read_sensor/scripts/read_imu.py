@@ -7,12 +7,12 @@ from geometry_msgs.msg import Twist
 import math
 import numpy as np
 
-class DummyNode(Node):
+class read_imu_node(Node):
     # ========Constructor===========
     def __init__(self):
         super().__init__('read_imu_node')
         self.eulerAngles = Twist()
-        self.quanternion_read = [0, 0, 0, 0]
+        self.quaternion_read = [0, 0, 0, 0]
         # create subscriber
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
         # create publisher
@@ -22,10 +22,10 @@ class DummyNode(Node):
 
     #========Class's methods=========
     def imu_callback(self,msg):
-        self.quanternion_read[0] = msg.orientation.x
-        self.quanternion_read[1] = msg.orientation.y
-        self.quanternion_read[2] = msg.orientation.z
-        self.quanternion_read[3] = msg.orientation.w
+        self.quaternion_read[0] = msg.orientation.x
+        self.quaternion_read[1] = msg.orientation.y
+        self.quaternion_read[2] = msg.orientation.z
+        self.quaternion_read[3] = msg.orientation.w
     def timeCallback(self):
            self.quaternion_to_euler()
     def quaternion_to_euler(self):
@@ -38,7 +38,7 @@ class DummyNode(Node):
         Returns:
         - None
         """
-        x, y, z, w = self.quanternion_read
+        x, y, z, w = self.quaternion_read
 
         # roll (x-axis rotation)
         t0 = +2.0 * (w * x + y * z)
@@ -64,7 +64,7 @@ class DummyNode(Node):
     
 def main(args=None):
     rclpy.init(args=args)
-    node = DummyNode()
+    node = read_imu_node()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

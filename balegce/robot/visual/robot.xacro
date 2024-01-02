@@ -10,8 +10,9 @@
     <!-- Add manipulator -->
     <xacro:include filename="$(find ${description_package})/robot/visual/manipulator.xacro"/>
     <xacro:include filename="$(find ${description_package})/robot/visual/sensor.xacro"/>
+
     <xacro:balegce/>
-    <!-- attrach sensor -->
+    <!-- attach sensor -->
     <xacro:sensor_link/>
 
 

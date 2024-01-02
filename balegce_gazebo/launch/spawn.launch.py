@@ -37,6 +37,18 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "controller_manager"]
     )
 
+    euler_angle_imu = Node(
+        package="read_sensor",
+        executable="read_imu.py",
+    )
+
+    position_controllers = Node(
+        package="controller_manager",
+        executable="spawner",
+        output="screen",
+        arguments=["position_controllers", "--controller-manager", "controller_manager"]
+    )
+
     velocity_controllers = Node(
         package="controller_manager",
         executable="spawner",
@@ -44,10 +56,18 @@ def generate_launch_description():
         arguments=["velocity_controllers", "--controller-manager", "controller_manager"]
     )
 
+    controller = Node(
+        package = "balegce_controller",
+        executable = "controller.py"
+    )
+
     launch_description = LaunchDescription()
     launch_description.add_action(robot_state_publisher)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
+    launch_description.add_action(euler_angle_imu)
+    launch_description.add_action(position_controllers)
     launch_description.add_action(velocity_controllers)
+    launch_description.add_action(controller)
     return launch_description

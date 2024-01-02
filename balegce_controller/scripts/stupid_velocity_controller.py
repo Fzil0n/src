@@ -3,22 +3,22 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
 
-class DummyNode(Node):
+class stupid_velocity_controller(Node):
     def __init__(self):
-        super().__init__('stupid_velocity_controller_node')
+        super().__init__('stupid_velocity_controller')
         # create publisher
         self.pub_veloCommand = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
         self.create_timer(0.01, self.timerCallback)
-        # methods
+    # methods
     def timerCallback(self):
         pubVelo = Float64MultiArray()
-        pubVelo.data = [0.1]
+        pubVelo.data = [0.0]
         self.pub_veloCommand.publish(pubVelo)
 
 
 def main(args=None):
     rclpy.init(args=args)
-    node = DummyNode()
+    node = stupid_velocity_controller()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
