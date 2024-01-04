@@ -29,6 +29,8 @@ velocity_controllers:
   ros__parameters:
     joints: 
       - joint_wheel
+      - joint_propeller_1
+      - joint_propeller_2
       - leg
     command_interface: 
       - velocity
@@ -41,6 +43,8 @@ effort_controllers:
   ros__parameters:
     joints: 
       - joint_wheel
+      - joint_propeller_1
+      - joint_propeller_2
       - leg
     command_interface: 
       - effort
