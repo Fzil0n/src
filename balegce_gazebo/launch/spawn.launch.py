@@ -27,7 +27,8 @@ def generate_launch_description():
         output='screen',
         arguments=[
             '-topic', '/robot_description',
-            '-entity', 'baLEGce'
+            '-entity', 'baLEGce',
+            '-z','0.145'
             ]
         )
     
