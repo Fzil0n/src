@@ -12,7 +12,7 @@ class stupid_velocity_controller_node(Node):
     # class's methods
     def timerCallback(self):
         pubVelo = Float64MultiArray()
-        pubVelo.data = [0.1, 0.1, 0.1, 0.1]
+        pubVelo.data = [0.0, 5.5, 0.1, 0.1]
         self.pub_veloCommand.publish(pubVelo)
 
 

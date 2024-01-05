@@ -71,16 +71,16 @@ def generate_launch_description():
         arguments=["velocity_controllers", "--controller-manager", "controller_manager"]
     )
 
-    # controller = Node(
-    #     package = "balegce_controller",
-    #     executable = "controller.py",
-    #     parameters=[
-    #         {'Kp_wheel':Kp_wheel},
-    #         {'Kp_propellerL':Kp_propellerL},
-    #         {'Kp_propellerR':Kp_propellerR},
-    #         {'forceConstance':forceConstance}
-    #     ]
-    # )
+    controller = Node(
+        package = "balegce_controller",
+        executable = "controller.py",
+        parameters=[
+            {'Kp_wheel':Kp_wheel},
+            {'Kp_propellerL':Kp_propellerL},
+            {'Kp_propellerR':Kp_propellerR},
+            {'forceConstance':forceConstance}
+        ]
+    )
 
     launch_description = LaunchDescription()
     launch_description.add_action(Kp_wheel_launch_arg)
@@ -94,5 +94,5 @@ def generate_launch_description():
     launch_description.add_action(euler_angle_imu)
     # launch_description.add_action(position_controllers)
     launch_description.add_action(velocity_controllers)
-    # launch_description.add_action(controller)
+    launch_description.add_action(controller)
     return launch_description
