@@ -15,12 +15,6 @@
     
     <!-- <link name="world"/> -->
     <xacro:balegce/>
-    <!-- <joint name="offset" type="floating">
-        <parent link="world"/>
-        <child link="base"/>
-        <origin xyz="0.0 0.0 0.15" rpy="0.0 0.0 0.0"/> 
-        <axis xyz="0 0 1"/>
-    </joint> -->
     <xacro:sensor_link/>
     <xacro:sensor_plugins/>
     <xacro:velocity_controller/>

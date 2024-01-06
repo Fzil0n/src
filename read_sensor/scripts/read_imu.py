@@ -4,7 +4,6 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import Twist
-import math
 import numpy as np
 
 class DummyNode(Node):
@@ -26,8 +25,10 @@ class DummyNode(Node):
         self.quanternion_read[1] = msg.orientation.y
         self.quanternion_read[2] = msg.orientation.z
         self.quanternion_read[3] = msg.orientation.w
+
     def timeCallback(self):
            self.quaternion_to_euler()
+
     def quaternion_to_euler(self):
         """
         Convert quaternion to Euler angles (roll, pitch, yaw).
