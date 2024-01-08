@@ -11,6 +11,9 @@ from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEve
 
 def generate_launch_description():
     # Launch arguments
+    Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='1.0',description="leg's Kp controller gain : float")
+    Kp_leg = LaunchConfiguration('Kp_leg')
+
     Kp_wheel_launch_arg = DeclareLaunchArgument('Kp_wheel', default_value='1.0',description="Wheel joint controller gain : float")
     Kp_wheel = LaunchConfiguration('Kp_wheel')
 
@@ -19,6 +22,9 @@ def generate_launch_description():
     
     Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='1.0',description="yaw's Kp controller gain : float")
     Kp_yaw = LaunchConfiguration('Kp_yaw')
+
+    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='1.0',description="leg's Kd controller gain : float")
+    Kd_leg = LaunchConfiguration('Kd_leg')
 
     Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.1',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
@@ -87,9 +93,11 @@ def generate_launch_description():
         package = "balegce_controller",
         executable = "controller.py",
         parameters=[
+            {'Kp_leg':Kp_leg},
             {'Kp_wheel':Kp_wheel},
             {'Kp_pitch':Kp_pitch},
             {'Kp_yaw':Kp_yaw},
+            {'Kd_leg':Kd_leg},
             {'Kd_pitch':Kd_pitch},
             {'Kd_yaw':Kd_yaw},
             {'forceConstant':forceConstant}
@@ -97,9 +105,11 @@ def generate_launch_description():
     )
 
     launch_description = LaunchDescription()
+    launch_description.add_action(Kp_leg_launch_arg)
     launch_description.add_action(Kp_wheel_launch_arg)
     launch_description.add_action(Kp_pitch_launch_arg)
     launch_description.add_action(Kp_yaw_launch_arg)
+    launch_description.add_action(Kd_leg_launch_arg)
     launch_description.add_action(Kd_pitch_launch_arg)
     launch_description.add_action(Kd_yaw_launch_arg)
     launch_description.add_action(forceConstant_launch_arg)
