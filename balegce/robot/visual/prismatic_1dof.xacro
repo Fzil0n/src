@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="example">
+    <!-- path to package -->
+    <xacro:property name="package_name" value="balegce"/>
+
+    <xacro:property name="PI" value="3.141592653589793"/>
+
+    <!-- Add manipulator -->
+    <xacro:include filename="$(find ${package_name})/robot/visual/functions.xacro"/>
+
+    <!-- 1 DOF prismatic -->
+    <link name="world"/>
+
+    <xacro:rigidTransform curr_link="world" next_link="worldPlan" xyz="0 0 0.05" rpy="0 0 0"/>
+    <link name="worldPlan">
+       <xacro:worldPlan  size="5.0 5.0 0.1" xyz="0 0 0" rpy="0 0 0"/>
+    </link>
+
+    <xacro:rigidTransform curr_link="worldPlan" next_link="link_0" xyz="0 0 0.15" rpy="0 0 0"/>
+    <link name="link_0">
+        <xacro:brickSolid link_id="0" size="0.5 0.2 0.2" xyz="0 0 0" rpy="0 0 0"/>
+    </link>
+
+    <xacro:prismaticJoint id="0" curr_link="link_0" next_link="link_1" xyz="0.5 0 0.15" rpy="0 ${PI/2} 0"/>
+    <link name="link_1">
+        <xacro:cylinderSolid link_id="1" R="0.05" l="1.0" xyz="0 0 0" rpy="0 0 0"/>
+    </link>
+
+
+</robot>

@@ -14,10 +14,10 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         name='rviz',
-        arguments=['-d', rviz_path],
+        # arguments=['-d', rviz_path],
         output='screen')
     
-    path_description = os.path.join(pkg,'robot','visual','robot.xacro')
+    path_description = os.path.join(pkg,'robot','visual','prismatic_1dof.xacro')
     robot_desc_xml = xacro.process_file(path_description).toxml()
     #robot_desc_xml = xacro.process_file(path_description,mappings={'robot_name': namespace}).toxml()
     
