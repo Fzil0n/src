@@ -14,25 +14,25 @@ def generate_launch_description():
     Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='1.0',description="leg's Kp controller gain : float")
     Kp_leg = LaunchConfiguration('Kp_leg')
 
-    Kp_wheel_launch_arg = DeclareLaunchArgument('Kp_wheel', default_value='1.0',description="Wheel joint controller gain : float")
+    Kp_wheel_launch_arg = DeclareLaunchArgument('Kp_wheel', default_value='3.0',description="Wheel joint controller gain : float")
     Kp_wheel = LaunchConfiguration('Kp_wheel')
 
-    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='1.0',description="pitch's Kp controller gain : float")
+    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='55.0',description="pitch's Kp controller gain : float")
     Kp_pitch = LaunchConfiguration('Kp_pitch')
     
-    Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='1.0',description="yaw's Kp controller gain : float")
+    Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='55.0',description="yaw's Kp controller gain : float")
     Kp_yaw = LaunchConfiguration('Kp_yaw')
 
-    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='1.0',description="leg's Kd controller gain : float")
+    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='10.0',description="leg's Kd controller gain : float")
     Kd_leg = LaunchConfiguration('Kd_leg')
 
-    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.1',description="pitch's Kd controller gain : float")
+    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='10.0',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
     
-    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='0.1',description="yaw's Kd controller gain : float")
+    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='1.0',description="yaw's Kd controller gain : float")
     Kd_yaw = LaunchConfiguration('Kd_yaw')
 
-    forceConstant_launch_arg = DeclareLaunchArgument('forceConstant', default_value='1.0',description="Force Constance : float")
+    forceConstant_launch_arg = DeclareLaunchArgument('forceConstant', default_value='0.001',description="Force Constance : float")
     forceConstant = LaunchConfiguration('forceConstant')
 
     pkg = get_package_share_directory('balegce_gazebo')
@@ -83,11 +83,11 @@ def generate_launch_description():
         arguments=["velocity_controllers", "--controller-manager", "controller_manager"]
     )
 
-    forward_position_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["forward_position_controller", "--controller-manager", "controller_manager"]        
-    )
+    # forward_position_controller = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=["forward_position_controller", "--controller-manager", "controller_manager"]        
+    # )
 
     controller = Node(
         package = "balegce_controller",
@@ -118,7 +118,7 @@ def generate_launch_description():
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
     launch_description.add_action(euler_angle_imu)
-    launch_description.add_action(forward_position_controller)
+    # launch_description.add_action(forward_position_controller)
     launch_description.add_action(velocity_controllers)
     launch_description.add_action(controller)
     return launch_description

@@ -20,7 +20,7 @@ controller_manager:
 velocity_controllers:
   ros__parameters:
     joints: 
-      - joint_body
+      # - joint_body
       - joint_wheel
       - joint_propeller_1
       - joint_propeller_2
@@ -46,7 +46,7 @@ velocity_controllers:
 effort_controllers:
   ros__parameters:
     joints: 
-      - joint_body
+      # - joint_body
       - joint_wheel
       - joint_propeller_1
       - joint_propeller_2

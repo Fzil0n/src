@@ -13,7 +13,7 @@ class controller(Node):
         self.create_timer(0.01, self.timerCallback)
 
         #--|Create publisher|--#
-        self.pub_posCommand     = self.create_publisher(Float64MultiArray, "/forward_position_controller/commands", 10)
+        # self.pub_posCommand     = self.create_publisher(Float64MultiArray, "/forward_position_controller/commands", 10)
         self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
@@ -21,7 +21,7 @@ class controller(Node):
         #--|Create Subscriber|--#
         self.create_subscription(Twist, 'euler_angles', self.curr_orientation_callback, 10)
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
-        self.sub_joint_body_states = self.create_subscription(JointState,"/joint_body_states",self.sub_sub_joint_body_states_callback,10)
+        # self.sub_joint_body_states = self.create_subscription(JointState,"/joint_body_states",self.sub_sub_joint_body_states_callback,10)
 
         #--|ROS Parameters|--#
         # Kp controller gain
@@ -41,11 +41,12 @@ class controller(Node):
         self.curr_legVelocity = 0.0
         self.referenceAngles = [0.0, 0.0, 0.0]  # reference curr_orientation of the robot(roll pitch yaw)
         self.referenceLegPosition = 0.0
+        self.threshole = 0.0002 #0.0114591559 degrees
 
     # Methods ===========================================
-    def sub_sub_joint_body_states_callback(self,msg):
-        self.curr_legPosition = msg.position[0]
-        self.curr_legVelocity = msg.velocity[0]
+    # def sub_sub_joint_body_states_callback(self,msg):
+    #     self.curr_legPosition = msg.position[0]
+    #     self.curr_legVelocity = msg.velocity[0]
 
     def imu_callback(self, msg):
         self.curr_angularVelocity[0] = msg.angular_velocity.x
@@ -80,9 +81,12 @@ class controller(Node):
         # publish
         self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
         self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
-        self.pub_posCommand.publish(pubPos)
-        # self.pub_veloCommand.publish(pubVelo)
+        # self.pub_posCommand.publish(pubPos)
+        self.pub_veloCommand.publish(pubVelo)
 
+    def trustGenerator(self, speed, forceConstant):
+        return forceConstant*speed*speed
+    
     # Subscriber Callback ------------------------
     def curr_orientation_callback(self, msg):
         self.curr_orientation[0] = msg.angular.x
@@ -90,33 +94,45 @@ class controller(Node):
         self.curr_orientation[2] = msg.angular.z
 
     # Controller ---------------------------------
-    def trustGenerator(self, speed, forceConstant):
-        return forceConstant*speed*speed
+    def pitchController(self, error:float)->float:
+        if(error >= self.threshole):
+            Kp_pitch    = self.get_parameter('Kp_pitch').value
+            Kd_pitch    = self.get_parameter('Kd_pitch').value
+            out = Kp_pitch*error + Kd_pitch*self.curr_angularVelocity[1]
+        else:
+            out = 0.0
+        return out
+    
+    def yawController(self, error:float)->float:
+        if(error >= self.threshole):
+            Kp_yaw      = self.get_parameter('Kp_yaw').value
+            Kd_yaw      = self.get_parameter('Kd_yaw').value
+            out =  Kp_yaw*error + Kd_yaw*self.curr_angularVelocity[2]
+        else:
+            out =  0.0
+        return out
+        
+    def propeller_velocityController(self, error_pitch:float, error_yaw:float)->list[float]:
+        pitch_command   = self.pitchController(error_pitch)
+        yaw_command     = self.yawController(error_yaw)
+        propellerR_velo = pitch_command + yaw_command  
+        propellerL_velo = pitch_command - yaw_command
+        return [propellerL_velo, propellerR_velo]
     
     def velocityController(self)->list[float]:
-        Kp_leg      = self.get_parameter('Kp_leg').value
+        # Kp_leg      = self.get_parameter('Kp_leg').value
         Kp_wheel    = self.get_parameter('Kp_wheel').value
-        Kp_pitch    = self.get_parameter('Kp_pitch').value
-        Kp_yaw      = self.get_parameter('Kp_yaw').value
-        Kd_leg      = self.get_parameter('Kd_leg').value
-        Kd_pitch    = self.get_parameter('Kd_pitch').value
-        Kd_yaw      = self.get_parameter('Kd_yaw').value
+        # Kd_leg      = self.get_parameter('Kd_leg').value
         # error
-        diff_leg      = self.referenceLegPosition - self.curr_legPosition
+        # diff_leg      = self.referenceLegPosition - self.curr_legPosition
         diff_orient_x = self.referenceAngles[0] - self.curr_orientation[0]
         diff_orient_y = self.referenceAngles[1] - self.curr_orientation[1]
         diff_orient_z = self.referenceAngles[2] - self.curr_orientation[2]
         # controllers
-        leg_velo = Kp_leg*diff_leg + Kd_leg*self.curr_legVelocity
-
+        # leg_velo = Kp_leg*diff_leg + Kd_leg*self.curr_legVelocity
         wheel_velo = Kp_wheel*diff_orient_x 
-
-        pitch_command = Kp_pitch*diff_orient_y + Kd_pitch*self.curr_angularVelocity[1]
-        yaw_command = Kp_yaw*diff_orient_z + Kd_yaw*self.curr_angularVelocity[2]
-        propellerR_velo = pitch_command + yaw_command  
-        propellerL_velo = pitch_command - yaw_command
-
-        output = [leg_velo, wheel_velo, propellerL_velo, propellerR_velo]
+        propeller_velo = self.propeller_velocityController(diff_orient_y, diff_orient_z)
+        output = [wheel_velo, propeller_velo[0], propeller_velo[1]]
         return output
 
 def main(args=None):

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from balegce_gazebo.dummy_module import dummy_function, dummy_var
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
