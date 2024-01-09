@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<robot xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" name="simple_box">        
+<!-- ground truth -->
+<xacro:macro name="ground_truth" params="">
+    <gazebo>
+        <controller:ros_p3d name="body_controller" plugin="libros_p3d.so">
+            <alwaysOn>true</alwaysOn>
+            <updateRate>100.0</updateRate>
+            <bodyName>body</bodyName>
+            <topicName>body_pose_ground_truth</topicName>
+            <gaussianNoise>0.0</gaussianNoise>
+            <frameName>body</frameName>
+            <interface:position name="body_p3d_position_iface" />
+        </controller:ros_p3d>
+    </gazebo>
+
+    <gazebo reference="body">
+        <material>Gazebo/Blue</material>
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+</xacro:macro>
+
+</robot>

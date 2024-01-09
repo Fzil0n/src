@@ -9,13 +9,15 @@
     <!-- Include sensor plugin -->
     <xacro:include filename="$(find ${gazebo_pkg})/robot/balegce_sensor.gazebo.xacro"/>
     <xacro:include filename="$(find ${gazebo_pkg})/robot/balegce_controller.gazebo.xacro"/>
+    <xacro:include filename="$(find ${gazebo_pkg})/robot/visual/balegce_ground_truth.xacro"/>
     <!-- Add manipulator -->
     <xacro:include filename="$(find ${description_pkg})/robot/visual/manipulator.xacro"/>
     <xacro:include filename="$(find ${description_package})/robot/visual/sensor.xacro"/>
-    
+        
     <!-- <link name="world"/> -->
     <xacro:balegce/>
     <xacro:sensor_link/>
     <xacro:sensor_plugins/>
     <xacro:velocity_controller/>
+    <xacro:ground_truth/>
 </robot>

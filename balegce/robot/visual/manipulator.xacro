@@ -267,6 +267,8 @@
         <xacro:joint_propeller_1/>
         <xacro:joint_propeller_2/>
 
+
+
     </xacro:macro>
 
 </robot>
