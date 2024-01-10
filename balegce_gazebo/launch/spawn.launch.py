@@ -65,7 +65,7 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "controller_manager"]
     )
 
-    euler_angle_imu = Node(
+    read_imu = Node(
         package="read_sensor",
         executable="read_imu.py",
     )
@@ -117,8 +117,8 @@ def generate_launch_description():
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
-    launch_description.add_action(euler_angle_imu)
+    launch_description.add_action(read_imu)
     # launch_description.add_action(forward_position_controller)
     launch_description.add_action(velocity_controllers)
-    launch_description.add_action(controller)
+    # launch_description.add_action(controller)
     return launch_description

@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Float64MultiArray
+from std_msgs.msg import Float64MultiArray, Float64
 from geometry_msgs.msg import Twist, Wrench
 from sensor_msgs.msg import Imu, JointState
+import math
 
 class controller(Node):
     def __init__(self):
@@ -17,7 +18,7 @@ class controller(Node):
         self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
-
+        self.pub_error          = self.create_publisher(Float64, "/pitch_error", 10)
         #--|Create Subscriber|--#
         self.create_subscription(Twist, 'euler_angles', self.curr_orientation_callback, 10)
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
@@ -40,8 +41,9 @@ class controller(Node):
         self.curr_legPosition = 0.0
         self.curr_legVelocity = 0.0
         self.referenceAngles = [0.0, 0.0, 0.0]  # reference curr_orientation of the robot(roll pitch yaw)
+        self.referenceOmega = [0.0, 0.0, 0.0]  
         self.referenceLegPosition = 0.0
-        self.threshole = 0.0002 #0.0114591559 degrees
+        self.threshole = 0.05 #1.14591559*0.025 degrees
 
     # Methods ===========================================
     # def sub_sub_joint_body_states_callback(self,msg):
@@ -79,8 +81,8 @@ class controller(Node):
         propellerL_force = self.trustGenerator(speed=controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
         propellerR_force = self.trustGenerator(speed=controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
         # publish
-        self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
-        self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
+        # self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
+        # self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
         # self.pub_posCommand.publish(pubPos)
         self.pub_veloCommand.publish(pubVelo)
 
@@ -104,7 +106,7 @@ class controller(Node):
         return out
     
     def yawController(self, error:float)->float:
-        if(error >= self.threshole):
+        if(abs(error) >= self.threshole):
             Kp_yaw      = self.get_parameter('Kp_yaw').value
             Kd_yaw      = self.get_parameter('Kd_yaw').value
             out =  Kp_yaw*error + Kd_yaw*self.curr_angularVelocity[2]
@@ -120,6 +122,7 @@ class controller(Node):
         return [propellerL_velo, propellerR_velo]
     
     def velocityController(self)->list[float]:
+        
         # Kp_leg      = self.get_parameter('Kp_leg').value
         Kp_wheel    = self.get_parameter('Kp_wheel').value
         # Kd_leg      = self.get_parameter('Kd_leg').value
@@ -128,12 +131,20 @@ class controller(Node):
         diff_orient_x = self.referenceAngles[0] - self.curr_orientation[0]
         diff_orient_y = self.referenceAngles[1] - self.curr_orientation[1]
         diff_orient_z = self.referenceAngles[2] - self.curr_orientation[2]
+        # publish error for debugging
+        pub_error = Float64()
+        pub_error.data = diff_orient_y
+        self.pub_error.publish(pub_error)
         # controllers
         # leg_velo = Kp_leg*diff_leg + Kd_leg*self.curr_legVelocity
         wheel_velo = Kp_wheel*diff_orient_x 
         propeller_velo = self.propeller_velocityController(diff_orient_y, diff_orient_z)
+        
+        # error_pitch = self.referenceOmega[1] - self.curr_angularVelocity[1]
+        # error_yaw   = self.referenceAngles[2] - self.curr_orientation[2]
         output = [wheel_velo, propeller_velo[0], propeller_velo[1]]
         return output
+        
 
 def main(args=None):
     rclpy.init(args=args)
