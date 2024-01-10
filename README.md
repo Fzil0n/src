@@ -16,13 +16,13 @@ This project is part of the FRA501 Robotics DevOps course for third-year student
 2.) place "src" in workspace
 
 3.) check in src will have 7 file :
-  - balegce
-  - balegce_controller
-  - balegce_gazebo
-  - input
-  - input_interfaces
-  - moter_control
-  - read_sensor
+    - balegce
+    - balegce_controller
+    - balegce_gazebo
+    - input
+    - input_interfaces
+    - moter_control
+    - read_sensor
 
 4.) Build "src" in your workspace.
 ```
