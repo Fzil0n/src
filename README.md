@@ -1,12 +1,10 @@
 # Monopedal Jumping Robot : Project Robotic Devops (FRA501)
-โปรเจคนี้เป็นโปรเจคสำหรับจัดทำ Simulation ของ Monopedal Jumping Robot เพื่อสังเกตลักษณะและพฤติกรรมการเคลื่อนที่ 
-และเพื่อเรียนรู้และศึกษาการทำ Simulation ใน Rviz และ Gazebo โดยทำการ Simulation ให้ Monopedal Jumping Robot 
-สามารถเคลื่อนที่ในรูปแบบของการกระโดด และทำการทรงตัว เพื่อให้สามารถกระโดดอยู่กับที่ และทำการกระโดดไปยังจุดหมายที่ได้กำหนดไว้ได้
+This project is part of the FRA501 Robotics DevOps course for third-year students at the Institute of Field Robotics (FIBO), King Mongkut’s University of Technology Thonburi (KMUTT) to simulate the work systems of the Monopedal Jumping Robot (BaLegce) with 1 reaction wheel and 2 propellers on Rviz and Gazebo program with ROS2. The simulation will enable the Monopedal Jumping Robot to move in a jumping pattern, maintain its balance, jump in place, and navigate towards predefined destinations.
 
 # Objective
-1. เพื่อศึกษาการทำ Simulation ใน Rviz และ Gazebo
-2. เพื่อศึกษาการเคลื่อนที่ และการควบคุมการเคลื่อนที รวมถึงพฤติกรรมการเคลื่อนที่ของ Monopedal Jumping Robot
-3. เพื่อศึกษาพื้นฐานการใช้ ROS2
+1. To simulate the work system of the Monopedal Jumping Robot (BaLegce) with 1 reaction wheel and 2 propellers on Rviz and Gazebo program with ROS2.
+2. To study the process of simulation in Rviz and Gazebo.
+3. To investigate movement and motion control, including the motion behavior of the Monopedal Jumping Robot.
 
 # System Overview 
 ![image](https://github.com/TanawatPawanta/src/assets/119843578/24f40170-1477-4297-b6b8-99b757d27798)
@@ -17,7 +15,14 @@
 
 2.) place "src" in workspace
 
-3.) check in src will have 3 file : "turtlesim_plus_control","turtlesim_plus_control_interfaces" and "turtlesim_plus"
+3.) check in src will have 7 file :
+  - balegce
+  - balegce_controller
+  - balegce_gazebo
+  - input
+  - input_interfaces
+  - moter_control
+  - read_sensor
 
 4.) Build "src" in your workspace.
 ```
@@ -26,10 +31,16 @@ colcon build
 source install/setup.bash
 ```
 
-# Testing out turtlesim_control
+# Testing out turtlesim_control in **Rviz**
 - Terminal 1: Run launch file in terminal
 ```
-ros2 launch turtlesim_plus_control following.launch.py
+ros2 launch balegce display.launch.py
+```
+
+# Testing out turtlesim_control in **Gazebo**
+- Terminal 1: Run launch file in terminal
+```
+ros2 launch balegce display.launch.py
 ```
 
 # Schematics of System
