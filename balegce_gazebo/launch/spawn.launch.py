@@ -29,10 +29,10 @@ def generate_launch_description():
     Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='10.0',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
     
-    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='1.0',description="yaw's Kd controller gain : float")
+    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='10.0',description="yaw's Kd controller gain : float")
     Kd_yaw = LaunchConfiguration('Kd_yaw')
 
-    forceConstant_launch_arg = DeclareLaunchArgument('forceConstant', default_value='0.001',description="Force Constance : float")
+    forceConstant_launch_arg = DeclareLaunchArgument('forceConstant', default_value='0.0001',description="Force Constance : float")
     forceConstant = LaunchConfiguration('forceConstant')
 
     pkg = get_package_share_directory('balegce_gazebo')
@@ -120,5 +120,5 @@ def generate_launch_description():
     launch_description.add_action(read_imu)
     # launch_description.add_action(forward_position_controller)
     launch_description.add_action(velocity_controllers)
-    # launch_description.add_action(controller)
+    launch_description.add_action(controller)
     return launch_description
