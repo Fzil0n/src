@@ -4,7 +4,6 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import Twist, Wrench
-from input_interfaces.srv import SetPosition
 
 class controller(Node):
     def __init__(self):
@@ -24,7 +23,7 @@ class controller(Node):
 
         # Variables
         self.orientation = [0.0, 0.0, 0.0]
-
+    
     # Methods ===========================================
     def wrenchPub(self, publisher, force, torque):
         msg = Wrench()
