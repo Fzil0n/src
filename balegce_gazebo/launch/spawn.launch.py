@@ -128,12 +128,12 @@ def generate_launch_description():
     launch_description.add_action(Kd_pitch_launch_arg)
     launch_description.add_action(Kd_yaw_launch_arg)
     launch_description.add_action(forceConstant_launch_arg)
+    
     launch_description.add_action(robot_state_publisher)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
     launch_description.add_action(event_handler)
     launch_description.add_action(read_imu)
- 
     launch_description.add_action(controller)
     return launch_description
