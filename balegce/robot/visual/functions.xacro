@@ -1,20 +1,36 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:macro name="worldPlan" params=" size xyz rpy">
+    <xacro:macro name="worldPlan" params="mass origin rpy x y z">
         <visual>
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <geometry>
-                <box size="${size}"/>
+                <box size="${x} ${y} ${z}"/>
             </geometry>
             <material name="worldPlan">
                 <color rgba="0.2 1 0.2 1"/>
             </material>
         </visual>
+        <inertial>
+            <origin xyz="${origin}"/>
+            <mass value= "${mass}"/>
+            <inertia ixx="${(1/12) * mass * (y*y+z*z)}" 
+                     ixy="0.0" 
+                     ixz="0.0"
+                     iyy="${(1/12) * mass * (x*x+z*z)}" 
+                     iyz="0.0"
+                     izz="${(1/12) * mass * (x*x+y*y)}" />
+        </inertial>
+        <collision>
+            <origin xyz="${origin}" rpy="${rpy}"/>
+            <geometry>
+                <box size="${x} ${y} ${z}"/>
+            </geometry>
+        </collision>
     </xacro:macro>
 
-    <xacro:macro name="base_visual" params="xyz rpy R l">
+    <xacro:macro name="base_visual" params="mass origin rpy R l">
         <visual>
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <geometry>
                 <cylinder radius="${R}" length="${l}"/>
             </geometry>
@@ -22,11 +38,27 @@
                 <color rgba="1 0.2 0.2 1"/>
             </material>
         </visual>
+        <inertial>
+            <origin xyz="${origin}"/>
+            <mass value="${mass}" />
+            <inertia ixx="${(1/12) * mass * (3*R*R + l*l)}" 
+                     ixy="0.0" 
+                     ixz="0.0"
+                     iyy="${(1/12) * mass * (3*R*R + l*l)}" 
+                     iyz="0.0"
+                     izz="${(1/2) * mass * (R*R)}" />
+        </inertial>
+        <collision>
+            <origin xyz="${origin}" rpy="${rpy}"/>
+            <geometry>
+                <cylinder radius="${R}" length="${l}"/>
+            </geometry>
+        </collision>
     </xacro:macro>
 
-    <xacro:macro name="cylinderSolid" params="link_id xyz rpy R l">
+    <xacro:macro name="cylinderSolid" params="mass origin rpy R l link_id">
         <visual>
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <geometry>
                 <cylinder radius="${R}" length="${l}"/>
             </geometry>
@@ -34,31 +66,63 @@
                 <color rgba="0.2 0.2 1 1"/>
             </material>
         </visual>
+        <inertial>
+            <origin xyz="${origin}"/>
+            <mass value="${mass}" />
+            <inertia ixx="${(1/12) * mass * (3*R*R + l*l)}" 
+                     ixy="0.0" 
+                     ixz="0.0"
+                     iyy="${(1/12) * mass * (3*R*R + l*l)}" 
+                     iyz="0.0"
+                     izz="${(1/2) * mass * (R*R)}" />
+        </inertial>
+        <collision>
+            <origin xyz="${origin}" rpy="${rpy}"/>
+            <geometry>
+                <cylinder radius="${R}" length="${l}"/>
+            </geometry>
+        </collision>
     </xacro:macro>
 
-    <xacro:macro name="brickSolid" params="link_id size xyz rpy">
+    <xacro:macro name="brickSolid" params="mass origin rpy x y z link_id">
         <visual>
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <geometry>
-                <box size="${size}"/>
+                <box size="${x} ${y} ${z}"/>
             </geometry>
             <material name="link_color_${link_id}">
                 <color rgba="1 0.2 0.2 1"/>
             </material>
         </visual>
+        <inertial>
+            <origin xyz="${origin}"/>
+            <mass value= "${mass}"/>
+            <inertia ixx="${(1/12) * mass * (y*y+z*z)}" 
+                     ixy="0.0" 
+                     ixz="0.0"
+                     iyy="${(1/12) * mass * (x*x+z*z)}" 
+                     iyz="0.0"
+                     izz="${(1/12) * mass * (x*x+y*y)}" />
+        </inertial>
+        <collision>
+            <origin xyz="${origin}" rpy="${rpy}"/>
+            <geometry>
+                <box size="${x} ${y} ${z}"/>
+            </geometry>
+        </collision>
     </xacro:macro>
 
-    <xacro:macro name="rigidTransform" params="curr_link next_link xyz rpy">
+    <xacro:macro name="rigidTransform" params="curr_link next_link origin rpy">
         <joint name="rigidTransform_${curr_link}_to_${next_link}" type="fixed">
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <parent link="${curr_link}"/>
             <child link="${next_link}"/>
         </joint>
     </xacro:macro>
 
-    <xacro:macro name="revoluteJoint" params="id curr_link next_link xyz rpy">
+    <xacro:macro name="revoluteJoint" params="id curr_link next_link origin rpy">
         <joint name="revoluteJoint_${id}" type="revolute">
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <parent link="${curr_link}"/>
             <child link="${next_link}"/>
             <axis xyz="0 0 1"/>     
@@ -70,9 +134,9 @@
         </joint>
     </xacro:macro>
     
-    <xacro:macro name="prismaticJoint" params="id curr_link next_link xyz rpy">
+    <xacro:macro name="prismaticJoint" params="id curr_link next_link origin rpy">
         <joint name="prismaticJoint_${id}" type="prismatic">
-            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <origin xyz="${origin}" rpy="${rpy}"/>
             <parent link="${curr_link}"/>
             <child link="${next_link}"/>
             <axis xyz="0 0 1"/>     

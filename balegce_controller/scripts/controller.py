@@ -13,8 +13,8 @@ class controller(Node):
         self.create_timer(0.01, self.timerCallback)
 
         #--|Create publisher|--#
-        self.pub_posCommand     = self.create_publisher(Float64MultiArray, "/forward_position_controller/commands", 10)
         self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
+        self.pub_effCommand     = self.create_publisher(Float64MultiArray, "/effort_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
 
@@ -40,7 +40,7 @@ class controller(Node):
         self.curr_legPosition = 0.0
         self.curr_legVelocity = 0.0
         self.referenceAngles = [0.0, 0.0, 0.0]  # reference curr_orientation of the robot(roll pitch yaw)
-        self.referenceLegPosition = 0.0
+        # self.referenceLegPosition = 0.065
 
     # Methods ===========================================
     def sub_sub_joint_body_states_callback(self,msg):
@@ -67,21 +67,19 @@ class controller(Node):
     
     # Timer Callback -----------------------------
     def timerCallback(self):
-        controller_output = self.velocityController()
-        # position
-        pubPos = Float64MultiArray()
-        pubPos.data = [self.referenceLegPosition]
+        vel_controller_output = self.velocityController()
         # velocity
         pubVelo = Float64MultiArray() 
-        pubVelo.data = controller_output   # leg(body) wheel prop1(left) prop2(right)
+        pubVelo.data = vel_controller_output   # leg(body) wheel prop1(left) prop2(right)
         # generate trust from velocity
-        propellerL_force = self.trustGenerator(speed=controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
-        propellerR_force = self.trustGenerator(speed=controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
+        propellerL_force = self.trustGenerator(speed=vel_controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
+        propellerR_force = self.trustGenerator(speed=vel_controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
         # publish
         self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
         self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
-        self.pub_posCommand.publish(pubPos)
-        # self.pub_veloCommand.publish(pubVelo)
+        # self.pub_posCommand.publish(pubPos)
+        self.pub_veloCommand.publish(pubVelo)
+        pass
 
     # Subscriber Callback ------------------------
     def curr_orientation_callback(self, msg):
@@ -94,21 +92,16 @@ class controller(Node):
         return forceConstant*speed*speed
     
     def velocityController(self)->list[float]:
-        Kp_leg      = self.get_parameter('Kp_leg').value
         Kp_wheel    = self.get_parameter('Kp_wheel').value
         Kp_pitch    = self.get_parameter('Kp_pitch').value
         Kp_yaw      = self.get_parameter('Kp_yaw').value
-        Kd_leg      = self.get_parameter('Kd_leg').value
         Kd_pitch    = self.get_parameter('Kd_pitch').value
         Kd_yaw      = self.get_parameter('Kd_yaw').value
         # error
-        diff_leg      = self.referenceLegPosition - self.curr_legPosition
         diff_orient_x = self.referenceAngles[0] - self.curr_orientation[0]
         diff_orient_y = self.referenceAngles[1] - self.curr_orientation[1]
         diff_orient_z = self.referenceAngles[2] - self.curr_orientation[2]
         # controllers
-        leg_velo = Kp_leg*diff_leg + Kd_leg*self.curr_legVelocity
-
         wheel_velo = Kp_wheel*diff_orient_x 
 
         pitch_command = Kp_pitch*diff_orient_y + Kd_pitch*self.curr_angularVelocity[1]
@@ -116,8 +109,18 @@ class controller(Node):
         propellerR_velo = pitch_command + yaw_command  
         propellerL_velo = pitch_command - yaw_command
 
-        output = [leg_velo, wheel_velo, propellerL_velo, propellerR_velo]
+        output = [wheel_velo, propellerL_velo, propellerR_velo]
         return output
+    
+    def effort_controller(self):
+        # Kp_leg   = self.get_parameter('Kp_leg').value
+        # Kd_leg   = self.get_parameter('Kd_leg').value
+        # #error
+        # diff_leg = self.referenceLegPosition - self.curr_legPosition
+        # # controllers
+        # leg_pos = Kp_leg*diff_leg + Kd_leg*self.curr_legVelocity
+        # return [leg_pos]
+        pass
 
 def main(args=None):
     rclpy.init(args=args)

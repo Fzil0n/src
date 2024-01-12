@@ -9,22 +9,26 @@
     <xacro:include filename="$(find ${package_name})/robot/visual/functions.xacro"/>
 
     <!-- 1 DOF prismatic -->
-    <link name="world"/>
+    <!-- <link name="world"/> -->
 
-    <xacro:rigidTransform curr_link="world" next_link="worldPlan" xyz="0 0 0.05" rpy="0 0 0"/>
+    <!-- <xacro:rigidTransform curr_link="world" next_link="worldPlan" origin="0 0 0.05" rpy="0 0 0"/>
     <link name="worldPlan">
-       <xacro:worldPlan  size="5.0 5.0 0.1" xyz="0 0 0" rpy="0 0 0"/>
-    </link>
+       <xacro:worldPlan mass = "10.0" origin="0 0 0" rpy="0 0 0" x="5.0" y="5.0" z="0.1"/>
+    </link> -->
 
-    <xacro:rigidTransform curr_link="worldPlan" next_link="link_0" xyz="0 0 0.15" rpy="0 0 0"/>
+    <!-- <xacro:rigidTransform curr_link="world" next_link="link_0" origin="0 0 0.10" rpy="0 0 0"/> -->
     <link name="link_0">
-        <xacro:brickSolid link_id="0" size="0.5 0.2 0.2" xyz="0 0 0" rpy="0 0 0"/>
+        <xacro:brickSolid mass = "1.0" origin="0 0 0" rpy="0 0 0" x="0.5" y="0.2" z="0.2" link_id="0"/>
     </link>
 
-    <xacro:prismaticJoint id="0" curr_link="link_0" next_link="link_1" xyz="0.5 0 0.15" rpy="0 ${PI/2} 0"/>
+    <xacro:prismaticJoint id="0" curr_link="link_0" next_link="link_1" origin="0.25 0 0.15" rpy="0 ${PI/2} 0"/>
     <link name="link_1">
-        <xacro:cylinderSolid link_id="1" R="0.05" l="1.0" xyz="0 0 0" rpy="0 0 0"/>
+        <xacro:cylinderSolid mass = "1.0" origin="0 0 0" rpy="0 0 0" R="0.05" l="1.0" link_id="1"/>
     </link>
 
+    <xacro:rigidTransform curr_link="link_0" next_link="link_2" origin="0 0 0.30" rpy="0 0 0"/>
+    <link name="link_2">
+        <xacro:brickSolid mass = "1.0" origin="0 0 0" rpy="0 0 0" x="0.5" y="0.2" z="0.2" link_id="2"/>
+    </link>
 
 </robot>

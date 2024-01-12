@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="example">
+    <xacro:property name="description_pkg" value="balegce"/>
+    <xacro:property name="gazebo_pkg" value="balegce_gazebo"/>
+  
+    <xacro:property name="PI" value="3.141592653589793"/>
+
+    <!-- Add manipulator -->
+    <xacro:include filename="$(find ${description_pkg})/robot/visual/functions.xacro"/>
+    <xacro:include filename="$(find ${description_pkg})/robot/visual/prismatic_1dof.xacro"/>
+
+    <!-- Include controller plugin -->
+    <xacro:include filename="$(find ${gazebo_pkg})/robot/prismatic_controller.gazebo.xacro"/>
+
+    <xacro:position_controller/>
+</robot>

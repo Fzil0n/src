@@ -1,12 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
-
-    # position_controllers:
-    #   type: position_controllers/JointGroupPositionController
-
-    # forward_position_controller:
-    #   type: forward_command_controller/ForwardCommandController
+    update_rate: 1000  # Hz
 
     effort_controllers:
       type: effort_controllers/JointGroupEffortController
@@ -20,7 +14,6 @@ controller_manager:
 velocity_controllers:
   ros__parameters:
     joints: 
-      - joint_body
       - joint_wheel
       - joint_propeller_1
       - joint_propeller_2
@@ -30,26 +23,11 @@ velocity_controllers:
       - position
       - velocity
       - effort
-      
-# forward_position_controller:
-#   ros__parameters:
-#     joints:
-#       - joint_body
-#     interface_name: position
-
-# position_controllers:
-#   ros__parameters:
-#     joints:
-#       - joint_body
-
 
 effort_controllers:
   ros__parameters:
     joints: 
       - joint_body
-      - joint_wheel
-      - joint_propeller_1
-      - joint_propeller_2
     command_interface: 
       - effort
     state_interface: 

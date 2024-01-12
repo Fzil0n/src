@@ -1,6 +1,7 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, LogInfo
+from launch.event_handlers import OnExecutionComplete, OnProcessExit
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 import os
@@ -70,23 +71,10 @@ def generate_launch_description():
         executable="read_imu.py",
     )
 
-    # position_controllers = Node(
-    #     package="controller_manager",
-    #     executable="spawner",
-    #     output="screen",
-    #     arguments=["position_controllers", "--controller-manager", "controller_manager"]
-    # )
-
-    velocity_controllers = Node(
+    controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["velocity_controllers", "--controller-manager", "controller_manager"]
-    )
-
-    forward_position_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["forward_position_controller", "--controller-manager", "controller_manager"]        
+        arguments=["velocity_controllers", "effort_controllers", "--controller-manager", "controller_manager"]
     )
 
     controller = Node(
@@ -104,6 +92,13 @@ def generate_launch_description():
         ]
     )
 
+    event_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action = joint_state_broadcaster,
+            on_exit=[euler_angle_imu, controller_spawner]
+        )
+    )
+
     launch_description = LaunchDescription()
     launch_description.add_action(Kp_leg_launch_arg)
     launch_description.add_action(Kp_wheel_launch_arg)
@@ -117,8 +112,5 @@ def generate_launch_description():
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
-    launch_description.add_action(euler_angle_imu)
-    launch_description.add_action(forward_position_controller)
-    launch_description.add_action(velocity_controllers)
-    launch_description.add_action(controller)
+    launch_description.add_action(event_handler)
     return launch_description

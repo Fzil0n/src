@@ -29,6 +29,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/controller.py
   scripts/stupid_velocity_controller.py
+  scripts/prismatic_controller.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
