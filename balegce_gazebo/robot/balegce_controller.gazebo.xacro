@@ -8,7 +8,7 @@
         <plugin>gazebo_ros2_control/GazeboSystem</plugin>
       </hardware>
 
-      <!-- <joint name="joint_body">
+      <joint name="joint_body">
         <command_interface name="position">
           <param name="min">0.0</param>
           <param name="max">0.065</param>
@@ -18,7 +18,7 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
         <state_interface name="effort"/>
-      </joint> -->
+      </joint> 
 
       <joint name="joint_wheel">
         <command_interface name="effort"/>
