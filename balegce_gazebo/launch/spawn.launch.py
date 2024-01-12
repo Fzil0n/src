@@ -14,10 +14,10 @@ def generate_launch_description():
     Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='1.0',description="leg's Kp controller gain : float")
     Kp_leg = LaunchConfiguration('Kp_leg')
 
-    Kp_wheel_launch_arg = DeclareLaunchArgument('Kp_wheel', default_value='3.0',description="Wheel joint controller gain : float")
-    Kp_wheel = LaunchConfiguration('Kp_wheel')
+    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='3.0',description="roll's Kp controller gain : float")
+    Kp_roll = LaunchConfiguration('Kp_roll')
 
-    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='55.0',description="pitch's Kp controller gain : float")
+    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='3500.0',description="pitch's Kp controller gain : float")
     Kp_pitch = LaunchConfiguration('Kp_pitch')
     
     Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='55.0',description="yaw's Kp controller gain : float")
@@ -26,7 +26,10 @@ def generate_launch_description():
     Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='10.0',description="leg's Kd controller gain : float")
     Kd_leg = LaunchConfiguration('Kd_leg')
 
-    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='10.0',description="pitch's Kd controller gain : float")
+    Kd_roll_launch_arg = DeclareLaunchArgument('Kd_roll', default_value='3.0',description="roll's Kd controller gain : float")
+    Kd_roll = LaunchConfiguration('Kd_roll')
+
+    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='50.0',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
     
     Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='10.0',description="yaw's Kd controller gain : float")
@@ -94,10 +97,11 @@ def generate_launch_description():
         executable = "controller.py",
         parameters=[
             {'Kp_leg':Kp_leg},
-            {'Kp_wheel':Kp_wheel},
+            {'Kp_roll':Kp_roll},
             {'Kp_pitch':Kp_pitch},
             {'Kp_yaw':Kp_yaw},
             {'Kd_leg':Kd_leg},
+            {'Kd_roll':Kd_roll},
             {'Kd_pitch':Kd_pitch},
             {'Kd_yaw':Kd_yaw},
             {'forceConstant':forceConstant}
@@ -106,13 +110,16 @@ def generate_launch_description():
 
     launch_description = LaunchDescription()
     launch_description.add_action(Kp_leg_launch_arg)
-    launch_description.add_action(Kp_wheel_launch_arg)
+    launch_description.add_action(Kp_roll_launch_arg)
     launch_description.add_action(Kp_pitch_launch_arg)
     launch_description.add_action(Kp_yaw_launch_arg)
+
+    launch_description.add_action(Kd_roll_launch_arg)
     launch_description.add_action(Kd_leg_launch_arg)
     launch_description.add_action(Kd_pitch_launch_arg)
     launch_description.add_action(Kd_yaw_launch_arg)
     launch_description.add_action(forceConstant_launch_arg)
+
     launch_description.add_action(robot_state_publisher)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
