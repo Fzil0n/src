@@ -58,13 +58,6 @@ def generate_launch_description():
         executable="read_imu.py",
     )
 
-    # position_controllers = Node(
-    #     package="controller_manager",
-    #     executable="spawner",
-    #     output="screen",
-    #     arguments=["position_controllers", "--controller-manager", "controller_manager"]
-    # )
-
     velocity_controllers = Node(
         package="controller_manager",
         executable="spawner",
