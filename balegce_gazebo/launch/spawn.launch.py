@@ -93,7 +93,6 @@ def generate_launch_description():
         arguments=["velocity_controllers", "effort_controllers", "--controller-manager", "controller_manager"]
     )
 
-
     controller = Node(
         package = "balegce_controller",
         executable = "controller.py",
