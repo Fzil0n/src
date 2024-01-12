@@ -1,6 +1,7 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, LogInfo
+from launch.event_handlers import OnExecutionComplete, OnProcessExit
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 import os
@@ -10,19 +11,32 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 
 def generate_launch_description():
-    # Launch arguments
+    # --|Launch arguments|--#
+    Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='1.0',description="leg's Kp controller gain : float")
+    Kp_leg = LaunchConfiguration('Kp_leg')
+
     Kp_wheel_launch_arg = DeclareLaunchArgument('Kp_wheel', default_value='1.0',description="Wheel joint controller gain : float")
     Kp_wheel = LaunchConfiguration('Kp_wheel')
 
-    Kp_propellerL_launch_arg = DeclareLaunchArgument('Kp_propellerL', default_value='1.0',description="Propeller left joint controller gain : float")
-    Kp_propellerL = LaunchConfiguration('Kp_propellerL')
+    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='1.0',description="pitch's Kp controller gain : float")
+    Kp_pitch = LaunchConfiguration('Kp_pitch')
     
-    Kp_propellerR_launch_arg = DeclareLaunchArgument('Kp_propellerR', default_value='1.0',description="Propeller right joint controller gain : float")
-    Kp_propellerR = LaunchConfiguration('Kp_propellerR')
+    Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='1.0',description="yaw's Kp controller gain : float")
+    Kp_yaw = LaunchConfiguration('Kp_yaw')
 
-    forceConstance_launch_arg = DeclareLaunchArgument('forceConstance', default_value='1.0',description="Force Constance : float")
-    forceConstance = LaunchConfiguration('forceConstance')
+    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='1.0',description="leg's Kd controller gain : float")
+    Kd_leg = LaunchConfiguration('Kd_leg')
 
+    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.1',description="pitch's Kd controller gain : float")
+    Kd_pitch = LaunchConfiguration('Kd_pitch')
+    
+    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='0.1',description="yaw's Kd controller gain : float")
+    Kd_yaw = LaunchConfiguration('Kd_yaw')
+
+    forceConstant_launch_arg = DeclareLaunchArgument('forceConstant', default_value='1.0',description="Force Constance : float")
+    forceConstant = LaunchConfiguration('forceConstant')
+
+    # --|URDF Robot description|--#
     pkg = get_package_share_directory('balegce_gazebo')
     path = os.path.join(pkg,'robot','balegce.gazebo.xacro')
     ros_description = xacro.process_file(path).toxml()
@@ -32,10 +46,14 @@ def generate_launch_description():
         executable = 'robot_state_publisher',
         parameters = [{'robot_description':ros_description}]
     )
+
+    # --|Start Gazebo server and client|--#
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
         )
+    
+    # --|Nodes|--#
     robot_spawner = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
@@ -58,34 +76,46 @@ def generate_launch_description():
         executable="read_imu.py",
     )
 
-    velocity_controllers = Node(
+    controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["velocity_controllers", "--controller-manager", "controller_manager"]
+        arguments=["velocity_controllers", "effort_controllers", "--controller-manager", "controller_manager"]
     )
 
     controller = Node(
         package = "balegce_controller",
         executable = "controller.py",
         parameters=[
+            {'Kp_leg':Kp_leg},
             {'Kp_wheel':Kp_wheel},
-            {'Kp_propellerL':Kp_propellerL},
-            {'Kp_propellerR':Kp_propellerR},
-            {'forceConstance':forceConstance}
+            {'Kp_pitch':Kp_pitch},
+            {'Kp_yaw':Kp_yaw},
+            {'Kd_leg':Kd_leg},
+            {'Kd_pitch':Kd_pitch},
+            {'Kd_yaw':Kd_yaw},
+            {'forceConstant':forceConstant}
         ]
     )
 
+    event_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action = joint_state_broadcaster,
+            on_exit=[euler_angle_imu, controller_spawner]
+        )
+    )
+
     launch_description = LaunchDescription()
+    launch_description.add_action(Kp_leg_launch_arg)
     launch_description.add_action(Kp_wheel_launch_arg)
-    launch_description.add_action(Kp_propellerL_launch_arg)
-    launch_description.add_action(Kp_propellerR_launch_arg)
-    launch_description.add_action(forceConstance_launch_arg)
+    launch_description.add_action(Kp_pitch_launch_arg)
+    launch_description.add_action(Kp_yaw_launch_arg)
+    launch_description.add_action(Kd_leg_launch_arg)
+    launch_description.add_action(Kd_pitch_launch_arg)
+    launch_description.add_action(Kd_yaw_launch_arg)
+    launch_description.add_action(forceConstant_launch_arg)
     launch_description.add_action(robot_state_publisher)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
-    launch_description.add_action(euler_angle_imu)
-    # launch_description.add_action(position_controllers)
-    launch_description.add_action(velocity_controllers)
-    launch_description.add_action(controller)
+    launch_description.add_action(event_handler)
     return launch_description
