@@ -69,18 +69,18 @@
         <!-- floor contact -->
         <gazebo reference="contact_link">
             <gravity>true</gravity>
-            <sensor name="imu_sensor" type="imu">
+            <sensor name="contact_sensor" type="contact">
                 <always_on>true</always_on>
                 <update_rate>10</update_rate>
                 <visualize>true</visualize>
                 <topic>__default_topic__</topic>
             <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
                 <ros>
-                    <remapping>~/out:=imu</remapping>
+                    <remapping>~/out:=contact</remapping>
                 </ros>
                 <update_rate>10.0</update_rate>
                 <gaussian_noise>0.0</gaussian_noise>
-                <frame_name>imu_link</frame_name>
+                <frame_name>contact_link</frame_name>
             </plugin>
             </sensor>
         </gazebo> 
