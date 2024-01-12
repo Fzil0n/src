@@ -153,24 +153,6 @@ class controller(Node):
         self.pub_velo_error.publish(pub_velo_error)   
 
     def velocityController(self)->list[float]:
-        """"
-        # Kp_leg      = self.get_parameter('Kp_leg').value
-        Kp_wheel    = self.get_parameter('Kp_wheel').value
-        # Kd_leg      = self.get_parameter('Kd_leg').value
-        # error
-        # diff_leg      = self.referenceLegPosition - self.curr_legPosition
-        diff_orient_x = self.referenceAngles[0] - self.curr_orientation[0]
-        diff_orient_y = self.referenceAngles[1] - self.curr_orientation[1]
-        diff_orient_z = self.referenceAngles[2] - self.curr_orientation[2]
-        # publish error for debugging
-        pub_error = Float64()
-        pub_error.data = diff_orient_y
-        self.pub_error.publish(pub_error)
-        # controllers
-        # leg_velo = Kp_leg*diff_leg + Kd_leg*self.curr_legVelocity
-        wheel_velo = Kp_wheel*diff_orient_x 
-        propeller_velo = self.propeller_velocityController(diff_orient_y, diff_orient_z)
-        """
         error_orien_roll = self.referenceAngles[0] - self.curr_orientation[0]
         error_orien_pitch = self.referenceAngles[1] - self.curr_orientation[1]
         error_orien_yaw   = self.referenceAngles[2] - self.curr_orientation[2]
@@ -185,7 +167,7 @@ class controller(Node):
 
         wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshole=self.threshole_orien)
         propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
-        output = [wheel_velo, propeller_velo[0], propeller_velo[1]]
+        output = [-wheel_velo, propeller_velo[0], propeller_velo[1]]
         return output
         
 
