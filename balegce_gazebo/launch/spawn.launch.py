@@ -113,7 +113,7 @@ def generate_launch_description():
     event_handler = RegisterEventHandler(
         OnProcessExit(
             target_action = joint_state_broadcaster,
-            on_exit=[read_imu, controller_spawner]
+            on_exit=[read_imu, controller_spawner, controller]
         )
     )
 
@@ -134,6 +134,4 @@ def generate_launch_description():
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
     launch_description.add_action(event_handler)
-    launch_description.add_action(read_imu)
-    launch_description.add_action(controller)
     return launch_description
