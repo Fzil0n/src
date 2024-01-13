@@ -74,14 +74,14 @@
                 <update_rate>10</update_rate>
                 <visualize>true</visualize>
                 <topic>__default_topic__</topic>
-            <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-                <ros>
-                    <remapping>~/out:=contact</remapping>
-                </ros>
-                <update_rate>10.0</update_rate>
-                <gaussian_noise>0.0</gaussian_noise>
-                <frame_name>contact_link</frame_name>
-            </plugin>
+                <plugin filename="libgazebo_ros_contact.so" name="contact_plugin">
+                    <ros>
+                        <remapping>~/out:=contact</remapping>
+                    </ros>
+                    <update_rate>10.0</update_rate>
+                    <gaussian_noise>0.0</gaussian_noise>
+                    <frame_name>contact_link</frame_name>
+                </plugin>
             </sensor>
         </gazebo> 
 

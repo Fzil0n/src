@@ -19,5 +19,4 @@
     <xacro:sensor_link/>
     <xacro:sensor_plugins/>
     <xacro:velocity_controller/>
-    <xacro:ground_truth/>
 </robot>
