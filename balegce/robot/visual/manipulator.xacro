@@ -28,7 +28,7 @@
 
     <xacro:macro name="leg_collision">
         <collision>
-            <origin xyz="${LEG_COLLISION['position']}" rpy="${LEG_COLLISION['orientation']}"/>
+            <origin xyz="${LEG_VISUAL['position']}" rpy="${LEG_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/leg.stl"/>
             </geometry>
@@ -63,7 +63,7 @@
 
     <xacro:macro name="body_collision">
         <collision>
-            <origin xyz="${BODY_COLLISION['position']}" rpy="${BODY_COLLISION['orientation']}"/>
+            <origin xyz="${BODY_VISUAL['position']}" rpy="${BODY_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/body.stl"/>
             </geometry>
@@ -98,7 +98,7 @@
     
     <xacro:macro name="reactionwheel_collision">
         <collision>
-            <origin xyz="${REACTIONWHEEL_COLLISION['position']}" rpy="${REACTIONWHEEL_COLLISION['orientation']}"/>
+            <origin xyz="${REACTIONWHEEL_VISUAL['position']}" rpy="${REACTIONWHEEL_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/reactionwheel.stl"/>
             </geometry>
@@ -145,7 +145,7 @@
 
     <xacro:macro name="propeller_1_collision">
         <collision>
-            <origin xyz="${PROPELLER_COLLISION['position']}" rpy="${PROPELLER_COLLISION['orientation']}"/>
+            <origin xyz="${PROPELLER_1_VISUAL['position']}" rpy="${PROPELLER_1_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/propeller_1.stl"/>
             </geometry>
@@ -154,7 +154,7 @@
 
     <xacro:macro name="propeller_2_collision">
         <collision>
-            <origin xyz="${PROPELLER_COLLISION['position']}" rpy="${PROPELLER_COLLISION['orientation']}"/>
+            <origin xyz="${PROPELLER_2_VISUAL['position']}" rpy="${PROPELLER_2_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/propeller_2.stl"/>
             </geometry>
