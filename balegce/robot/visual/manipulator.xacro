@@ -223,6 +223,7 @@
 
     <!-- Visual with dynamics propoties -->
     <xacro:macro name="balegce" params="">
+        <link name="end_leg"/>
         <link name="base"/>
 
         <link name="leg">
@@ -254,7 +255,7 @@
             <xacro:propeller_inertial />
             <xacro:propeller_2_collision />
         </link>
-        <link name="end_leg"/>
+       
 
         <joint name="joint_end_leg" type="fixed">
             <parent link="leg"/>
