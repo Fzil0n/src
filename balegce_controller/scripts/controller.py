@@ -30,15 +30,15 @@ class controller(Node):
 
         #--|ROS Parameters|--#
         # Kp controller gain
-        self.declare_parameter('Kp_leg',1.0)
-        self.declare_parameter('Kp_roll',1.0)
-        self.declare_parameter('Kp_pitch',1.0)
-        self.declare_parameter('Kp_yaw',1.0)
+        self.declare_parameter('Kp_leg',0.0)
+        self.declare_parameter('Kp_roll',0.0)
+        self.declare_parameter('Kp_pitch',0.0)
+        self.declare_parameter('Kp_yaw',0.0)
         # Kd controller gain
-        self.declare_parameter('Kd_leg',0.1)
-        self.declare_parameter('Kd_roll',1.0)
-        self.declare_parameter('Kd_pitch',0.1)
-        self.declare_parameter('Kd_yaw',0.1)
+        self.declare_parameter('Kd_leg',0.0)
+        self.declare_parameter('Kd_roll',0.0)
+        self.declare_parameter('Kd_pitch',0.0)
+        self.declare_parameter('Kd_yaw',0.0)
 
         self.declare_parameter('forceConstant',1.0) # thrust gain
         #--|Variables|--#
@@ -50,8 +50,8 @@ class controller(Node):
         self.referenceAngles = [0.0, 0.0, 0.0]  # reference curr_orientation of the robot(roll pitch yaw)
         self.referenceOmega = [0.0, 0.0, 0.0]  
         self.referenceLegPosition = 0.0
-        self.threshole_orien = 0.02 #1.4591559 degrees
-        self.threshole_velo = 0.002
+        self.threshold_orien = 0.02 #1.4591559 degrees
+        self.threshold_velo = 0.002
 
     # Methods ===========================================
     # def sub_sub_joint_body_states_callback(self,msg):
@@ -111,7 +111,7 @@ class controller(Node):
 
     # Controller ---------------------------------
     def roll_PDcontroller(self,error:float, error_dot:float, threshold:float)->float:
-        if(error >= threshold):
+        if(abs(error) >= threshold):
             Kp_roll    = self.get_parameter('Kp_roll').value
             Kd_roll    = self.get_parameter('Kd_roll').value
             out = Kp_roll*error + Kd_roll*error_dot
@@ -119,8 +119,8 @@ class controller(Node):
             out = 0.0
         return out
     
-    def pitch_PDcontroller(self, error:float, error_dot:float, threshold: float)->float:
-        if(error >= threshold):
+    def pitch_PDcontroller(self, error:float, error_dot:float, threshole: float)->float:
+        if(error >= threshole):
             Kp_pitch    = self.get_parameter('Kp_pitch').value
             Kd_pitch    = self.get_parameter('Kd_pitch').value
             out = Kp_pitch*error + Kd_pitch*error_dot
@@ -138,8 +138,8 @@ class controller(Node):
         return out
     
     def propeller_velocity_PDController(self, error_pitch:float, error_yaw:float, error_pitch_dot:float, error_yaw_dot:float)->list[float]:
-        pitch_command   = self.pitch_PDcontroller(error_pitch, error_pitch_dot, self.threshole_velo)
-        yaw_command     = self.yaw_PDcontroller(error_yaw, error_yaw_dot, self.threshole_orien)
+        pitch_command   = self.pitch_PDcontroller(error_pitch, error_pitch_dot, self.threshold_velo)
+        yaw_command     = self.yaw_PDcontroller(error_yaw, error_yaw_dot, self.threshold_orien)
         propellerR_velo = pitch_command + yaw_command  
         propellerL_velo = pitch_command - yaw_command
         return [propellerL_velo, propellerR_velo]
@@ -167,9 +167,9 @@ class controller(Node):
         self.orien_error_pub(error_orien_roll, error_orien_pitch, error_orien_yaw)
         self.velo_error_pub(error_velo_roll, error_velo_pitch, error_velo_yaw)
 
-        wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshole_orien)
+        wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshole=self.threshole_orien)
         propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
-        output = [wheel_velo, propeller_velo[0], propeller_velo[1]]
+        output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         
 
