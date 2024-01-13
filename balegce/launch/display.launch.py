@@ -9,7 +9,7 @@ import xacro
 def generate_launch_description():
     
     pkg = get_package_share_directory('balegce')
-    rviz_path = os.path.join(pkg,'config','_display3.rviz')
+    rviz_path = os.path.join(pkg,'config','_display2.rviz')
     rviz = Node(
         package='rviz2',
         executable='rviz2',
