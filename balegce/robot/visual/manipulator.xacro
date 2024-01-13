@@ -171,8 +171,8 @@
 
     <xacro:macro name="joint_body" params="">
         <joint name="joint_body" type="${JOINT_BODY['types']}">
-            <parent link="body"/>
-            <child link="leg"/>
+            <parent link="leg"/>
+            <child link="body"/>
             <origin xyz="${JOINT_BODY['position']}" rpy="${JOINT_BODY['orientation']}"/> 
             <axis xyz="0 0 1"/>
             <limit 
@@ -220,11 +220,47 @@
                 effort="${JOINT_PROPELLER_2['effort']}"/>
         </joint>
     </xacro:macro>
+    
+    <xacro:macro name="rigidTransform" params="curr_link next_link xyz rpy">
+        <joint name="rigidTransform_${curr_link}_to_${next_link}" type="fixed">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${curr_link}"/>
+            <child link="${next_link}"/>
+        </joint>
+    </xacro:macro>
 
+    <xacro:macro name="revoluteJoint" params="id curr_link next_link xyz rpy">
+        <joint name="revoluteJoint_${id}" type="revolute">
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${curr_link}"/>
+            <child link="${next_link}"/>
+            <axis xyz="0 0 1"/>     
+            <limit 
+                lower="-3.14152" 
+                upper="3.14152" 
+                velocity="1000.0" 
+                effort="1000.0"/>     
+        </joint>
+    </xacro:macro>
     <!-- Visual with dynamics propoties -->
+    <xacro:property name="PI" value="3.141592653589793"/>
     <xacro:macro name="balegce" params="">
-        <link name="end_leg"/>
-        <link name="base"/>
+        
+
+        <link name="world"/>
+        <joint name="revoluteJoint_0" type="revolute">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <parent link="world"/>
+                <child link="leg"/>
+                <axis xyz="1 0 0"/>     
+                <limit 
+                    lower="-${PI/2}" 
+                    upper="${PI/2}" 
+                    velocity="1000.0" 
+                    effort="1000.0"/>     
+        </joint>
+
+        <!-- <link name="base"/> -->
 
         <link name="leg">
             <xacro:leg_visual />
@@ -255,21 +291,11 @@
             <xacro:propeller_inertial />
             <xacro:propeller_2_collision />
         </link>
-       
-
-        <joint name="joint_end_leg" type="fixed">
-            <parent link="leg"/>
-            <child link="end_leg"/>
-            <origin xyz="0.0 0.0 -0.145" rpy="0.0 0.0 0.0"/>
-        </joint>
-        <xacro:base_offset/>
+    
+        <!-- <xacro:base_offset/> -->
         <xacro:joint_body/>
         <xacro:joint_wheel/>
         <xacro:joint_propeller_1/>
         <xacro:joint_propeller_2/>
-
-
-
     </xacro:macro>
-
 </robot>

@@ -11,8 +11,24 @@
     <xacro:include filename="$(find ${description_package})/robot/visual/manipulator.xacro"/>
     <xacro:include filename="$(find ${description_package})/robot/visual/sensor.xacro"/>
 
+    <xacro:property name="PI" value="3.141592653589793"/>
+
+    <link name="world"/>
+    <joint name="revoluteJoint_0" type="revolute">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="world"/>
+            <child link="leg"/>
+            <axis xyz="1 0 0"/>     
+            <limit 
+                lower="-$(PI/2)" 
+                upper="$(PI/2)" 
+                velocity="1000.0" 
+                effort="1000.0"/>     
+    </joint>
+    
     <xacro:balegce/>
     <!-- attrach sensor -->
+
     <xacro:sensor_link/>
 
 
