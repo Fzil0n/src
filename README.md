@@ -9,6 +9,76 @@ This project is part of the FRA501 Robotics DevOps course for third-year student
 # System Overview 
 ![image](https://github.com/TanawatPawanta/src/assets/119843578/24f40170-1477-4297-b6b8-99b757d27798)
 
+# Monopedal Jumping Robot
+![image](https://github.com/TanawatPawanta/BaLEGce/assets/119843578/98602a57-ede2-49ee-b536-92f153c84349)
+have 5 parts of model
+- body
+- leg
+- reaction wheel
+- propeller 1
+- propeller 2
+
+# Package
+## balegce
+A package for defining various values to be used in visualizing the output in RVIZ. It also serves as the basic default configuration for the model, intended for further utilization in Gazebo simulations
+### 1. config
+The directory that contains a parameter file that defines the properties of the model. You can adjust the values in the parameter file.
+- kinematic_parameter.yaml
+The parameters file contains the position and orientation of the coordinated frame in the model, the types of each joint (prismatic, revolute, continuous), lower and upper ranges of motion for each joint, and the velocity and effort of each joint. In the default of this package, I have defined the kinematic parameter values of the model, referring to the model’s frame in SOLIDWORKS.
+![image](https://github.com/TanawatPawanta/BaLEGce/assets/119843578/ad54a09c-ffc6-483e-a624-e530f8b81595)
+example : 
+```
+joint_wheel:
+  types: revolute
+  orientation: 0.0 -1.5705 0.0
+  position: -0.0295 0.0 0.050
+  lower: -3.141592653589793
+  upper: 3.141592653589793
+  velocity: 1000.0
+  effort: 1000.0
+joint_propeller_1:
+  types: continuous
+  orientation: 0.0 -1.5705 0.0
+  position: -0.00063 -0.04668 0.15142
+  velocity: 1000.0
+  effort: 1000.0
+```
+- dynamics_parameters.yaml
+The parameters file contains physical properties, including mass, center of mass (COM), and inertia for each link in the model. In the default of this package, I have defined the dynamics parameter values of the model, referring to the model in SOLIDWORKS.
+example :
+![image](https://github.com/TanawatPawanta/BaLEGce/assets/119843578/c8764e67-4f0d-4748-a932-3a0131a094bc)
+```
+reactionwheel: 
+  mass: 0.01371
+  com: 0.00 -0.00519 0.00
+  inertia:
+    xx: 0.00013552
+    yy: 0.07074242
+    zz: 0.07078874
+    xy: 0.0
+    xz: 0.0
+    yz: 0.0
+```
+- collision_parameters.yaml
+The parameters file includes the position and orientation of the model within the collision section, The collision frame is referenced from the kinematic frame. It is possible to set the size of the collision through the 'size' parameter in the file.
+
+- sensor_parameters.yaml
+The parameters file contains information about the position and orientation of the sensor frame. It allows specifying on which link to mount it through the 'link' parameter.
+
+- visual_parameters.yaml
+The parameters file includes the position and orientation of the model within the visualization section, referencing the kinematic frame. Additionally, it includes color to be used in visualizing the model.
+
+### 2. robot/visual
+In this directory, there is a file named file.xacro was used to construct the robot model.
+- robot.xacro
+
+- properties.xacro
+
+- manipulator.xacro
+
+- sensor.xacro
+
+
 # Installation
 
 1.) Clone the repo to your workspace. You must unzip and put each folder in the workspace.
@@ -40,7 +110,7 @@ ros2 launch balegce display.launch.py
 # Testing out turtlesim_control in **Gazebo**
 - Terminal 1: Run launch file in terminal
 ```
-ros2 launch balegce display.launch.py
+ros2 launch balegce spawn.launch.py
 ```
 
 # Schematics of System
