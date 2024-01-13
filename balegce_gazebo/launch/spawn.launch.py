@@ -12,39 +12,32 @@ from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEve
 
 def generate_launch_description():
     # Launch arguments
-    Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='1.0',description="leg's Kp controller gain : float")
+    Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='0.0',description="leg's Kp controller gain : float")
     Kp_leg = LaunchConfiguration('Kp_leg')
 
-    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='3.0',description="roll's Kp controller gain : float")
+    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='0.0',description="roll's Kp controller gain : float")
     Kp_roll = LaunchConfiguration('Kp_roll')
 
-    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='3500.0',description="pitch's Kp controller gain : float")
+    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='3550.0',description="pitch's Kp controller gain : float")
     Kp_pitch = LaunchConfiguration('Kp_pitch')
     
-    Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='55.0',description="yaw's Kp controller gain : float")
+    Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='0.0',description="yaw's Kp controller gain : float")
     Kp_yaw = LaunchConfiguration('Kp_yaw')
 
-    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='10.0',description="leg's Kd controller gain : float")
+    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='0.0',description="leg's Kd controller gain : float")
     Kd_leg = LaunchConfiguration('Kd_leg')
 
-    Kd_roll_launch_arg = DeclareLaunchArgument('Kd_roll', default_value='3.0',description="roll's Kd controller gain : float")
+    Kd_roll_launch_arg = DeclareLaunchArgument('Kd_roll', default_value='0.0',description="roll's Kd controller gain : float")
     Kd_roll = LaunchConfiguration('Kd_roll')
 
-    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='50.0',description="pitch's Kd controller gain : float")
+    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='55.0',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
     
-    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='10.0',description="yaw's Kd controller gain : float")
+    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='0.0',description="yaw's Kd controller gain : float")
     Kd_yaw = LaunchConfiguration('Kd_yaw')
 
     forceConstant_launch_arg = DeclareLaunchArgument('forceConstant', default_value='0.0001',description="Force Constance : float")
     forceConstant = LaunchConfiguration('forceConstant')
-
-    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.1',description="pitch's Kd controller gain : float")
-    Kd_pitch = LaunchConfiguration('Kd_pitch')
-    
-    Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='0.1',description="yaw's Kd controller gain : float")
-    Kd_yaw = LaunchConfiguration('Kd_yaw')
-
 
 
     # --|URDF Robot description|--#

@@ -30,15 +30,15 @@ class controller(Node):
 
         #--|ROS Parameters|--#
         # Kp controller gain
-        self.declare_parameter('Kp_leg',1.0)
-        self.declare_parameter('Kp_roll',1.0)
-        self.declare_parameter('Kp_pitch',1.0)
-        self.declare_parameter('Kp_yaw',1.0)
+        self.declare_parameter('Kp_leg',0.0)
+        self.declare_parameter('Kp_roll',0.0)
+        self.declare_parameter('Kp_pitch',0.0)
+        self.declare_parameter('Kp_yaw',0.0)
         # Kd controller gain
-        self.declare_parameter('Kd_leg',0.1)
-        self.declare_parameter('Kd_roll',1.0)
-        self.declare_parameter('Kd_pitch',0.1)
-        self.declare_parameter('Kd_yaw',0.1)
+        self.declare_parameter('Kd_leg',0.0)
+        self.declare_parameter('Kd_roll',0.0)
+        self.declare_parameter('Kd_pitch',0.0)
+        self.declare_parameter('Kd_yaw',0.0)
 
         self.declare_parameter('forceConstant',1.0) # thrust gain
         #--|Variables|--#
@@ -169,7 +169,7 @@ class controller(Node):
 
         wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshold_orien)
         propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
-        output = [-wheel_velo, propeller_velo[0], propeller_velo[1]]
+        output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         
 
