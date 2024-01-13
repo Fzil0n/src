@@ -71,21 +71,48 @@ The parameters file includes the position and orientation of the model within th
 ### 2. robot/visual
 In this directory, there is a file named file.xacro was used to construct the robot model.
 - robot.xacro
-
+The file will get the path of file.xacro for constructing the robot model.
 - properties.xacro
-
+The file will get the parameters from the config file as a variable for constructing the robot model.
 - manipulator.xacro
-
+This file will use the variables that are defined in properties.xacro for constructing the visual, inertial, and collision of a link model and joint in Rviz and Gazebo.
 - sensor.xacro
+This file will use the variables about the sensor that are defined in properties.xacro for constructing the sensor link in the model
+
+### 3. launch
+- display.launch.py
+This file displays the model which has all links and joints including the sensor link in Rviz. 
+
+## balegce_gazebo
+### 1. config
+- controller_config.yaml
+
+### 2. robot
+- balegce.gazebo.xacro
+The file will get the path of file.xacro for constructing the robot model.
+- balegce_controller.gazebo.xacro
+The file will use the controller plugin from "libgazebo_ros2_control.so" and define where to reference the controller in the model. Including, the force plugin from "libgazebo_ros_force.so" and defining where to reference the force in the model.
+- balegce_ground_truth.xacro
+The file will use the ground_truth plugin from "libgazebo_ros_p3d.so" and define where to reference the ground_truth in the model. 
+- balegce_sensor.gazebo.xacro
+The file will use the sensor plugin from "libgazebo_ros_imu_sensor.so" and define where to reference the sensor in the model. 
+
+### 3. scripts
+- read_imu.py
+This file functions to convert the measured values from the IMU into roll, pitch, and yaw.
+
+### 4. launch
+-spawn.launch.py
+
 
 
 # Installation
 
 1.) Clone the repo to your workspace. You must unzip and put each folder in the workspace.
 
-2.) place "src" in workspace
+2.) Place "src" in the workspace
 
-3.) check in src will have 7 file :
+3.) Check in src will have 7 file :
     - balegce
     - balegce_controller
     - balegce_gazebo
