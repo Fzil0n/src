@@ -119,8 +119,8 @@ class controller(Node):
             out = 0.0
         return out
     
-    def pitch_PDcontroller(self, error:float, error_dot:float, threshole: float)->float:
-        if(error >= threshole):
+    def pitch_PDcontroller(self, error:float, error_dot:float, threshold: float)->float:
+        if(abs(error) >= threshold):
             Kp_pitch    = self.get_parameter('Kp_pitch').value
             Kd_pitch    = self.get_parameter('Kd_pitch').value
             out = Kp_pitch*error + Kd_pitch*error_dot
