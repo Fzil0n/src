@@ -2,7 +2,7 @@ base:
   orientation: 0.0 0.0 0.0
   position: 0.0 0.0 0.0
 joint_body:
-  types: prismatic
+  types: fixed
   orientation: 0 0.0 0.0
   position: 0.0 0.0 0.005
   lower: 0.0
