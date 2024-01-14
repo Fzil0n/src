@@ -19,8 +19,8 @@ class controller(Node):
         self.pub_effCommand     = self.create_publisher(Float64MultiArray, "/effort_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
-        self.pub_orien_error          = self.create_publisher(Float64MultiArray, "/orien_error", 10)
-        self.pub_velo_error          = self.create_publisher(Float64MultiArray, "/velo_error", 10)
+        self.pub_orien_error    = self.create_publisher(Float64MultiArray, "/orien_error", 10)
+        self.pub_velo_error     = self.create_publisher(Float64MultiArray, "/velo_error", 10)
         
         #--|Create Subscriber|--#
         self.create_subscription(Twist, 'euler_angles', self.curr_orientation_callback, 10)
@@ -84,16 +84,16 @@ class controller(Node):
     # Timer Callback -----------------------------
     def timerCallback(self):
         controller_output = self.velocityController()
-        # position
-        pubPos = Float64MultiArray()
-        pubPos.data = [self.referenceLegPosition]
-        # velocity
+        # --position--
+        # pubPos = Float64MultiArray()
+        # pubPos.data = [self.referenceLegPosition]
+        # --velocity--
         pubVelo = Float64MultiArray() 
-        pubVelo.data = controller_output   # leg(body) wheel prop1(left) prop2(right)
-        # generate trust from velocity
+        pubVelo.data = controller_output   # wheel prop1(left) prop2(right)
+        # --generate trust from velocity--
         propellerL_force = self.trustGenerator(speed=controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
         propellerR_force = self.trustGenerator(speed=controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
-        # publish
+        # --publish--
         self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
         self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
         # self.pub_posCommand.publish(pubPos)
