@@ -78,8 +78,8 @@
     </gazebo>
 
     <gazebo reference="leg">
-        <mu1>0.2</mu1>
-        <mu2>0.2</mu2>
+        <mu1>0.5</mu1>
+        <mu2>0.5</mu2>
         <material>Gazebo/Green</material>
     </gazebo>
 </robot>

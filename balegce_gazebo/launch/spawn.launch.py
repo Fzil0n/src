@@ -18,7 +18,7 @@ def generate_launch_description():
     Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='0.0',description="roll's Kp controller gain : float")
     Kp_roll = LaunchConfiguration('Kp_roll')
 
-    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='3550.0',description="pitch's Kp controller gain : float")
+    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='2550.0',description="pitch's Kp controller gain : float")
     Kp_pitch = LaunchConfiguration('Kp_pitch')
     
     Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='0.0',description="yaw's Kp controller gain : float")
