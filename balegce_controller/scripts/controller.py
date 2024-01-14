@@ -120,7 +120,7 @@ class controller(Node):
         return out
     
     def pitch_PDcontroller(self, error:float, error_dot:float, threshold: float)->float:
-        if(abs(error) >= threshold):
+        if(error >= threshold):
             Kp_pitch    = self.get_parameter('Kp_pitch').value
             Kd_pitch    = self.get_parameter('Kd_pitch').value
             out = Kp_pitch*error + Kd_pitch*error_dot
@@ -168,6 +168,7 @@ class controller(Node):
         self.velo_error_pub(error_velo_roll, error_velo_pitch, error_velo_yaw)
 
         wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshold_orien)
+        # wheel_velo = self.roll_PDcontroller
         propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
         output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
