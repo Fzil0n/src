@@ -167,9 +167,9 @@ class controller(Node):
         self.orien_error_pub(error_orien_roll, error_orien_pitch, error_orien_yaw)
         self.velo_error_pub(error_velo_roll, error_velo_pitch, error_velo_yaw)
 
-        wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshold_orien)
+        wheel_velo =  self.roll_PDcontroller(error=error_velo_roll, error_dot=-self.curr_angularAccelration[0], threshold=self.threshold_velo)
         propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
-        output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
+        output = [wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         
 
