@@ -128,6 +128,15 @@ class controller(Node):
             out = 0.0
         return out
     
+    def pitch_PDcontroller_inner(self, error:float, error_dot:float, threshold: float)->float:
+        if(abs(error) >= threshold) and (self.curr_angularVelocity[2] <= 0):
+            Kp_pitch    = 2550.0
+            Kd_pitch    = 55.0
+            out = Kp_pitch*error + Kd_pitch*error_dot
+        else:
+            out = 0.0
+        return out
+      
     def yaw_PDcontroller(self, error:float, error_dot:float, threshold:float)->float:
         if(abs(error) >= threshold):
             Kp_yaw      = self.get_parameter('Kp_yaw').value
@@ -138,10 +147,16 @@ class controller(Node):
         return out
     
     def propeller_velocity_PDController(self, error_pitch:float, error_yaw:float, error_pitch_dot:float, error_yaw_dot:float)->list[float]:
-        pitch_command   = self.pitch_PDcontroller(error_pitch, error_pitch_dot, self.threshold_velo)
+        # pitch_command  = self.pitch_PDcontroller(error_pitch, error_pitch_dot, self.threshold_velo)
+        pitch_outer_loop   = self.pitch_PDcontroller(error_pitch, error_pitch_dot, self.threshold_orien)
+
+        inner_loop_error = self.referenceOmega[2] + pitch_outer_loop - self.curr_angularVelocity[2]
+        inner_loop_error_dot = -(self.get_parameter('Kp_pitch').value * self.curr_angularVelocity[2] + (1.0 + self.get_parameter('Kd_pitch').value)*self.curr_angularAccelration[2])
+        pitch_inner_loop     = self.pitch_PDcontroller_inner(error=inner_loop_error, error_dot=inner_loop_error_dot, threshold=self.threshold_velo)
+
         yaw_command     = self.yaw_PDcontroller(error_yaw, error_yaw_dot, self.threshold_orien)
-        propellerR_velo = pitch_command + yaw_command  
-        propellerL_velo = pitch_command - yaw_command
+        propellerR_velo = pitch_inner_loop + yaw_command  
+        propellerL_velo = pitch_inner_loop - yaw_command
         return [propellerL_velo, propellerR_velo]
     
     def orien_error_pub(self,error_orien_roll:float, error_orien_pitch:float, error_orien_yaw:float)->None:
@@ -169,7 +184,7 @@ class controller(Node):
 
         wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshold_orien)
         # wheel_velo = self.roll_PDcontroller
-        propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
+        propeller_velo = self.propeller_velocity_PDController(error_orien_pitch, error_orien_yaw, -self.curr_angularVelocity[1], -self.curr_angularVelocity[2])    
         output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         
