@@ -91,7 +91,7 @@ class controller(Node):
         pubVelo = Float64MultiArray() 
         pubVelo.data = controller_output   # wheel prop1(left) prop2(right)
         # --generate trust from velocity--
-        propellerL_force = self.trustGenerator(speed=controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
+        propellerL_force = self.trustGenerator(speed=-controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
         propellerR_force = self.trustGenerator(speed=controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
         # --publish--
         self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
@@ -120,7 +120,7 @@ class controller(Node):
         return out
     
     def pitch_PDcontroller(self, error:float, error_dot:float, threshold: float)->float:
-        if(abs(error) >= threshold):
+        if(error >= threshold):
             Kp_pitch    = self.get_parameter('Kp_pitch').value
             Kd_pitch    = self.get_parameter('Kd_pitch').value
             out = Kp_pitch*error + Kd_pitch*error_dot
@@ -155,13 +155,13 @@ class controller(Node):
         self.pub_velo_error.publish(pub_velo_error)   
 
     def velocityController(self)->list[float]:
-        error_orien_roll = self.referenceAngles[0] - self.curr_orientation[0]
+        error_orien_roll  = self.referenceAngles[0] - self.curr_orientation[0]
         error_orien_pitch = self.referenceAngles[1] - self.curr_orientation[1]
         error_orien_yaw   = self.referenceAngles[2] - self.curr_orientation[2]
 
-        error_velo_roll = self.referenceOmega[0] - self.curr_angularVelocity[0]
+        error_velo_roll  = self.referenceOmega[0] - self.curr_angularVelocity[0]
         error_velo_pitch = self.referenceOmega[1] - self.curr_angularVelocity[1]
-        error_velo_yaw = self.referenceOmega[2] - self.curr_angularVelocity[2]
+        error_velo_yaw   = self.referenceOmega[2] - self.curr_angularVelocity[2]
         
         # publish error for debugging
         self.orien_error_pub(error_orien_roll, error_orien_pitch, error_orien_yaw)

@@ -67,23 +67,21 @@
         </gazebo>    
 
         <!-- floor contact -->
-        <gazebo reference="contact_link">
-            <gravity>true</gravity>
+        <gazebo reference="leg">
             <sensor name="contact_sensor" type="contact">
                 <always_on>true</always_on>
-                <update_rate>10</update_rate>
-                <visualize>true</visualize>
-                <topic>__default_topic__</topic>
-                <plugin filename="libgazebo_ros_contact.so" name="contact_plugin">
+                <update_rate>10.0</update_rate>
+                <contact>
+                    <collision>leg_collision_collision</collision>
+                </contact>
+                <plugin name="contact_plugin" filename="libgazebo_ros_bumper.so">
                     <ros>
-                        <remapping>~/out:=contact</remapping>
+                        <remapping>bumper_states:=contact</remapping>
                     </ros>
-                    <update_rate>10.0</update_rate>
-                    <gaussian_noise>0.0</gaussian_noise>
-                    <frame_name>contact_link</frame_name>
+                    <frame_name>leg</frame_name>
                 </plugin>
             </sensor>
-        </gazebo> 
+        </gazebo>
 
     </xacro:macro>
 </robot>
