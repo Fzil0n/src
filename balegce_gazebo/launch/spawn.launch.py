@@ -11,6 +11,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 
 def generate_launch_description():
+
     # Launch arguments
     Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='0.0',description="leg's Kp controller gain : float")
     Kp_leg = LaunchConfiguration('Kp_leg')
@@ -51,11 +52,26 @@ def generate_launch_description():
         parameters = [{'robot_description':ros_description}]
     )
 
+    # world 
+    world_file_name = 'balegce_world.world'
+    world = os.path.join(get_package_share_directory(
+        'balegce_gazebo'), 'worlds', world_file_name)
+    
+    declare_world_fname = DeclareLaunchArgument(
+        'world_fname', default_value = world, description='absolute path of gazebo world file')
+    
+    world_fname = LaunchConfiguration('world_fname')
+
     # --|Start Gazebo server and client|--#
+    # gazebo = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource([os.path.join(
+    #     get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
+    #     )
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-        )
+        launch_arguments={'world': world_fname}.items()
+    )
     
     # --|Nodes|--#
     robot_spawner = Node(
@@ -110,6 +126,7 @@ def generate_launch_description():
     )
 
     launch_description = LaunchDescription()
+
     launch_description.add_action(Kp_leg_launch_arg)
     launch_description.add_action(Kp_roll_launch_arg)
     launch_description.add_action(Kp_pitch_launch_arg)
@@ -122,6 +139,8 @@ def generate_launch_description():
     launch_description.add_action(forceConstant_launch_arg)
     
     launch_description.add_action(robot_state_publisher)
+
+    launch_description.add_action(declare_world_fname)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
