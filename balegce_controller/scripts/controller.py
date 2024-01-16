@@ -98,7 +98,6 @@ class controller(Node):
         self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
         # self.pub_posCommand.publish(pubPos)
         self.pub_veloCommand.publish(pubVelo)
-        pass
 
     def trustGenerator(self, speed, forceConstant):
         return forceConstant*speed*speed
