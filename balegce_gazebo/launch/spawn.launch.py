@@ -8,6 +8,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 
 def generate_launch_description():
+<<<<<<< HEAD
 
     # Launch arguments
     Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='1.0',description="roll's Kp controller gain : float")
@@ -33,6 +34,8 @@ def generate_launch_description():
 
 
     # --|URDF Robot description|--#
+=======
+>>>>>>> parent of 6f0295d (update)
     pkg = get_package_share_directory('balegce_gazebo')
     path = os.path.join(pkg,'robot','balegce.gazebo.xacro')
     ros_description = xacro.process_file(path).toxml()
@@ -62,11 +65,16 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster", "--controller-manager", "controller_manager"]
     )
 
+<<<<<<< HEAD
     read_imu = Node(
+=======
+    euler_angle_imu = Node(
+>>>>>>> parent of 6f0295d (update)
         package="read_sensor",
         executable="read_imu.py",
     )
 
+<<<<<<< HEAD
     controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -97,6 +105,20 @@ def generate_launch_description():
             target_action = joint_state_broadcaster,
             on_exit=[read_imu, controller_spawner, controller, leg_controller]
         )
+=======
+    position_controllers = Node(
+        package="controller_manager",
+        executable="spawner",
+        output="screen",
+        arguments=["position_controllers", "--controller-manager", "controller_manager"]
+    )
+
+    velocity_controllers = Node(
+        package="controller_manager",
+        executable="spawner",
+        output="screen",
+        arguments=["velocity_controllers", "--controller-manager", "controller_manager"]
+>>>>>>> parent of 6f0295d (update)
     )
 
     input = Node(
@@ -110,6 +132,7 @@ def generate_launch_description():
     )
 
     launch_description = LaunchDescription()
+<<<<<<< HEAD
 
     launch_description.add_action(Kp_roll_launch_arg)
     launch_description.add_action(Kp_pitch_launch_arg)
@@ -120,9 +143,19 @@ def generate_launch_description():
     launch_description.add_action(Kd_yaw_launch_arg)
     launch_description.add_action(forceConstant_launch_arg)
     
+=======
+>>>>>>> parent of 6f0295d (update)
     launch_description.add_action(robot_state_publisher)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
+<<<<<<< HEAD
     launch_description.add_action(event_handler)
+=======
+    launch_description.add_action(euler_angle_imu)
+    launch_description.add_action(position_controllers)
+    launch_description.add_action(velocity_controllers)
+    launch_description.add_action(input)
+    launch_description.add_action(controller)
+>>>>>>> parent of 6f0295d (update)
     return launch_description
