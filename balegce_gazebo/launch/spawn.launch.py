@@ -13,19 +13,19 @@ from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEve
 def generate_launch_description():
 
     # Launch arguments
-    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='1.0',description="roll's Kp controller gain : float")
+    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='2.0',description="roll's Kp controller gain : float")
     Kp_roll = LaunchConfiguration('Kp_roll')
 
-    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='3550.0',description="pitch's Kp controller gain : float")
+    Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='3000.0',description="pitch's Kp controller gain : float")
     Kp_pitch = LaunchConfiguration('Kp_pitch')
     
     Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='0.0',description="yaw's Kp controller gain : float")
     Kp_yaw = LaunchConfiguration('Kp_yaw')
 
-    Kd_roll_launch_arg = DeclareLaunchArgument('Kd_roll', default_value='0.0',description="roll's Kd controller gain : float")
+    Kd_roll_launch_arg = DeclareLaunchArgument('Kd_roll', default_value='4.0',description="roll's Kd controller gain : float")
     Kd_roll = LaunchConfiguration('Kd_roll')
 
-    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='55.0',description="pitch's Kd controller gain : float")
+    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.0',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
     
     Kd_yaw_launch_arg = DeclareLaunchArgument('Kd_yaw', default_value='0.0',description="yaw's Kd controller gain : float")
@@ -57,10 +57,6 @@ def generate_launch_description():
     world_fname = LaunchConfiguration('world_fname')
 
     # --|Start Gazebo server and client|--#
-    # gazebo = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource([os.path.join(
-    #     get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-    #     )
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),

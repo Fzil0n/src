@@ -14,9 +14,7 @@ class controller(Node):
         self.create_timer(0.01, self.timerCallback)
 
         #--|Create publisher|--#
-        # self.pub_posCommand     = self.create_publisher(Float64MultiArray, "/forward_position_controller/commands", 10)
         self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
-        self.pub_effCommand     = self.create_publisher(Float64MultiArray, "/effort_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
         self.pub_orien_error    = self.create_publisher(Float64MultiArray, "/orien_error", 10)
@@ -26,7 +24,6 @@ class controller(Node):
         self.create_subscription(Twist, 'euler_angles', self.curr_orientation_callback, 10)
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
         self.sub_angularAcc = self.create_subscription(Float64MultiArray,"angularAccelaration",self.angularAcc_callback, 10)
-        # self.sub_joint_body_states = self.create_subscription(JointState,"/joint_body_states",self.sub_sub_joint_body_states_callback,10)
 
         #--|ROS Parameters|--#
         # Kp controller gain
@@ -41,6 +38,7 @@ class controller(Node):
         self.declare_parameter('Kd_yaw',0.0)
 
         self.declare_parameter('forceConstant',1.0) # thrust gain
+
         #--|Variables|--#
         self.curr_angularVelocity = [0.0, 0.0, 0.0]  # current angular velocity of robot
         self.curr_angularAccelration = [0.0, 0.0, 0.0]  # current angular acceleration of robot
@@ -50,8 +48,22 @@ class controller(Node):
         self.referenceAngles = [0.0, 0.0, 0.0]  # reference curr_orientation of the robot(roll pitch yaw)
         self.referenceOmega = [0.0, 0.0, 0.0]  
         self.referenceLegPosition = 0.0
-        self.threshold_orien = 0.02 #1.4591559 degrees
+
+        self.threshold_orien = 0.002 #1.4591559 degrees
         self.threshold_velo = 0.002
+
+        self.orien_roll_last = 0
+        self.orien_roll_llast = 0
+
+        self.orien_pitch_last = 0
+        self.orien_pitch_llast = 0
+
+        self.orien_yaw_last = 0
+        self.orien_yaw_llast = 0
+        
+        self.roll_out = 0
+        self.pitch_out = 0
+        self.yaw_out = 0
 
     # Methods ===========================================
     def angularAcc_callback(self,msg):
@@ -87,13 +99,16 @@ class controller(Node):
         propellerL_force = self.trustGenerator(speed=-controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
         propellerR_force = self.trustGenerator(speed=controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
         # --publish--
-        self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
-        self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
-        # self.pub_posCommand.publish(pubPos)
+        self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, propellerL_force], torque=[0.0, 0.0, 0.0])
+        self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, propellerR_force], torque=[0.0, 0.0, 0.0])
         self.pub_veloCommand.publish(pubVelo)
 
     def trustGenerator(self, speed, forceConstant):
-        return forceConstant*speed*speed
+        if speed >= 0:
+            sign = 1
+        else:
+            sign = -1
+        return forceConstant*speed*speed*sign
     
     # Subscriber Callback ------------------------
     def curr_orientation_callback(self, msg):
@@ -112,7 +127,7 @@ class controller(Node):
         return out
     
     def pitch_PDcontroller(self, error:float, error_dot:float, threshold: float)->float:
-        if(error >= threshold):
+        if(abs(error) >= threshold):
             Kp_pitch    = self.get_parameter('Kp_pitch').value
             Kd_pitch    = self.get_parameter('Kd_pitch').value
             out = Kp_pitch*error + Kd_pitch*error_dot
@@ -159,8 +174,8 @@ class controller(Node):
         self.orien_error_pub(error_orien_roll, error_orien_pitch, error_orien_yaw)
         self.velo_error_pub(error_velo_roll, error_velo_pitch, error_velo_yaw)
 
-        wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshold_orien)
-        propeller_velo = self.propeller_velocity_PDController(error_orien_pitch, error_orien_yaw, -self.curr_angularVelocity[1], -self.curr_angularVelocity[2])    
+        wheel_velo =  self.roll_PDcontroller(error=error_velo_roll, error_dot=-self.curr_angularAccelration[0], threshold=self.threshold_orien)
+        propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
         output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         

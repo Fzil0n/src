@@ -19,13 +19,13 @@ joint_wheel:
   effort: 1000.0
 joint_propeller_1:
   types: continuous
-  orientation: 0.0 -1.5705 0.0
+  orientation: 0.0 1.5705 0.0
   position: 0.00808 -0.04668 0.15142
   velocity: 1000.0
   effort: 1000.0
 joint_propeller_2:
   types: continuous
-  orientation: 0.0 -1.5705 0.0
+  orientation: 0.0 1.5705 0.0
   position: 0.00808 0.04668 0.15142
   velocity: 1000.0
   effort: 1000.0
