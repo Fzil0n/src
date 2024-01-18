@@ -54,10 +54,6 @@ class controller(Node):
         self.threshold_velo = 0.002
 
     # Methods ===========================================
-    # def sub_sub_joint_body_states_callback(self,msg):
-    #     self.curr_legPosition = msg.position[0]
-    #     self.curr_legVelocity = msg.velocity[0]
-        
     def angularAcc_callback(self,msg):
         self.curr_angularAccelration[0] = msg.data[0]
         self.curr_angularAccelration[1] = msg.data[1]
@@ -84,9 +80,6 @@ class controller(Node):
     # Timer Callback -----------------------------
     def timerCallback(self):
         controller_output = self.velocityController()
-        # --position--
-        # pubPos = Float64MultiArray()
-        # pubPos.data = [self.referenceLegPosition]
         # --velocity--
         pubVelo = Float64MultiArray() 
         pubVelo.data = controller_output   # wheel prop1(left) prop2(right)
@@ -110,7 +103,7 @@ class controller(Node):
 
     # Controller ---------------------------------
     def roll_PDcontroller(self,error:float, error_dot:float, threshold:float)->float:
-        if(error >= threshold):
+        if(abs(error) >= threshold):
             Kp_roll    = self.get_parameter('Kp_roll').value
             Kd_roll    = self.get_parameter('Kd_roll').value
             out = Kp_roll*error + Kd_roll*error_dot
@@ -167,7 +160,7 @@ class controller(Node):
         self.velo_error_pub(error_velo_roll, error_velo_pitch, error_velo_yaw)
 
         wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, error_dot=-self.curr_angularVelocity[0], threshold=self.threshold_orien)
-        propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularVelocity[1], -self.curr_angularVelocity[2])    
+        propeller_velo = self.propeller_velocity_PDController(error_orien_pitch, error_orien_yaw, -self.curr_angularVelocity[1], -self.curr_angularVelocity[2])    
         output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         

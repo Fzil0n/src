@@ -20,8 +20,6 @@ class leg_controller(Node):
         self.sub_contact = self.create_subscription(ContactsState,"/contact",self.contact_callback,10)
         
         #--|Variables|--#
-        self.leg_contact_obj = ""
-        self.contact_force_z = 0
         self.trigger = False
 
 
