@@ -14,9 +14,7 @@ class controller(Node):
         self.create_timer(0.01, self.timerCallback)
 
         #--|Create publisher|--#
-        # self.pub_posCommand     = self.create_publisher(Float64MultiArray, "/forward_position_controller/commands", 10)
         self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
-        self.pub_effCommand     = self.create_publisher(Float64MultiArray, "/effort_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
         self.pub_orien_error    = self.create_publisher(Float64MultiArray, "/orien_error", 10)
@@ -26,21 +24,19 @@ class controller(Node):
         self.create_subscription(Twist, 'euler_angles', self.curr_orientation_callback, 10)
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
         self.sub_angularAcc = self.create_subscription(Float64MultiArray,"angularAccelaration",self.angularAcc_callback, 10)
-        # self.sub_joint_body_states = self.create_subscription(JointState,"/joint_body_states",self.sub_sub_joint_body_states_callback,10)
 
         #--|ROS Parameters|--#
         # Kp controller gain
-        self.declare_parameter('Kp_leg',0.0)
         self.declare_parameter('Kp_roll',0.0)
         self.declare_parameter('Kp_pitch',0.0)
         self.declare_parameter('Kp_yaw',0.0)
         # Kd controller gain
-        self.declare_parameter('Kd_leg',0.0)
         self.declare_parameter('Kd_roll',0.0)
         self.declare_parameter('Kd_pitch',0.0)
         self.declare_parameter('Kd_yaw',0.0)
 
         self.declare_parameter('forceConstant',1.0) # thrust gain
+        
         #--|Variables|--#
         self.curr_angularVelocity = [0.0, 0.0, 0.0]  # current angular velocity of robot
         self.curr_angularAccelration = [0.0, 0.0, 0.0]  # current angular acceleration of robot
@@ -53,11 +49,7 @@ class controller(Node):
         self.threshold_orien = 0.02 #1.4591559 degrees
         self.threshold_velo = 0.002
 
-    # Methods ===========================================
-    # def sub_sub_joint_body_states_callback(self,msg):
-    #     self.curr_legPosition = msg.position[0]
-    #     self.curr_legVelocity = msg.velocity[0]
-        
+    # Methods ===========================================  
     def angularAcc_callback(self,msg):
         self.curr_angularAccelration[0] = msg.data[0]
         self.curr_angularAccelration[1] = msg.data[1]
@@ -84,9 +76,6 @@ class controller(Node):
     # Timer Callback -----------------------------
     def timerCallback(self):
         controller_output = self.velocityController()
-        # --position--
-        # pubPos = Float64MultiArray()
-        # pubPos.data = [self.referenceLegPosition]
         # --velocity--
         pubVelo = Float64MultiArray() 
         pubVelo.data = controller_output   # wheel prop1(left) prop2(right)
@@ -110,7 +99,7 @@ class controller(Node):
 
     # Controller ---------------------------------
     def roll_PDcontroller(self,error:float, error_dot:float, threshold:float)->float:
-        if(abs(error) >= threshold):
+        if(error >= threshold):
             Kp_roll    = self.get_parameter('Kp_roll').value
             Kd_roll    = self.get_parameter('Kd_roll').value
             out = Kp_roll*error + Kd_roll*error_dot
