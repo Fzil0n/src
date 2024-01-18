@@ -1,5 +1,8 @@
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, LogInfo
+from launch.event_handlers import OnExecutionComplete, OnProcessExit
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 import os
 import xacro
@@ -42,19 +45,33 @@ def generate_launch_description():
         executable = 'robot_state_publisher',
         parameters = [{'robot_description':ros_description}]
     )
+
+    # world 
+    world_file_name = 'balegce_world.world'
+    world = os.path.join(get_package_share_directory(
+        'balegce_gazebo'), 'worlds', world_file_name)
+    
+    declare_world_fname = DeclareLaunchArgument(
+        'world_fname', default_value = world, description='absolute path of gazebo world file')
+    
+    world_fname = LaunchConfiguration('world_fname')
+
+    # --|Start Gazebo server and client|--#
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-        )
-        )
+        launch_arguments={'world': world_fname}.items()
+    )
+    
+    # --|Nodes|--#
     robot_spawner = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
         output='screen',
         arguments=[
             '-topic', '/robot_description',
-            '-entity', 'baLEGce'
-            '-entity', 'baLEGce'
+            '-entity', 'baLEGce',
+            '-z','0.145'
             ]
         )
     
@@ -101,16 +118,6 @@ def generate_launch_description():
         )
     )
 
-    input = Node(
-        package = "input",
-        executable = "input.py"
-    )
-
-    controller = Node(
-        package = "balegce_controller",
-        executable = "controller.py"
-    )
-
     launch_description = LaunchDescription()
 
     launch_description.add_action(Kp_roll_launch_arg)
@@ -123,9 +130,10 @@ def generate_launch_description():
     launch_description.add_action(forceConstant_launch_arg)
     
     launch_description.add_action(robot_state_publisher)
+
+    launch_description.add_action(declare_world_fname)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
-
     launch_description.add_action(event_handler)
     return launch_description
