@@ -4,7 +4,7 @@ base:
 joint_body:
   types: prismatic
   orientation: 0 0.0 0.0
-  position: 0.0 0.0 -0.145
+  position: 0.0 0.0 -0.144
   lower: 0.0
   upper: 0.065
   velocity: 1000.0
@@ -12,7 +12,7 @@ joint_body:
 joint_wheel:
   types: revolute
   orientation: 0.0 -1.5705 0.0
-  position: -0.0295 0.0 0.050
+  position: -0.0295 0.0 0.0502
   lower: -3.141592653589793
   upper: 3.141592653589793
   velocity: 1000.0
@@ -20,12 +20,12 @@ joint_wheel:
 joint_propeller_1:
   types: continuous
   orientation: 0.0 -1.5705 0.0
-  position: -0.00063 -0.04668 0.15142
+  position: -0.00938 -0.04668 0.15142
   velocity: 1000.0
   effort: 1000.0
 joint_propeller_2:
   types: continuous
   orientation: 0.0 -1.5705 0.0
-  position: -0.00063 0.04668 0.15142
+  position: -0.00938 0.04668 0.15142
   velocity: 1000.0
   effort: 1000.0

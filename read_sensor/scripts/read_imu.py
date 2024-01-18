@@ -1,33 +1,67 @@
 #!/usr/bin/python3
-from balegce_gazebo.dummy_module import dummy_function, dummy_var
+
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import Twist
-import math
 import numpy as np
+from std_msgs.msg import Float64MultiArray
 
 class read_imu_node(Node):
     # ========Constructor===========
     def __init__(self):
         super().__init__('read_imu_node')
         self.eulerAngles = Twist()
+<<<<<<< HEAD
         self.quaternion_read = [0, 0, 0, 0]
+=======
+        self.quanternion_read = [0.0, 0.0, 0.0, 0.0]
+        self.curr_angularVelocity = [0.0, 0.0, 0.0]
+        self.last_angularVelocity   = [0.0, 0.0, 0.0]
+        self.dt = 0.001
+>>>>>>> main
         # create subscriber
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
         # create publisher
         self.pub_euler = self.create_publisher(Twist,"euler_angles",10)
+        self.pub_angularAccelaration = self.create_publisher(Float64MultiArray,"angularAccelaration",10)
         # create timer
-        self.create_timer(0.001,self.timeCallback)
+        self.create_timer(self.dt,self.timeCallback)
 
     #========Class's methods=========
     def imu_callback(self,msg):
+<<<<<<< HEAD
         self.quaternion_read[0] = msg.orientation.x
         self.quaternion_read[1] = msg.orientation.y
         self.quaternion_read[2] = msg.orientation.z
         self.quaternion_read[3] = msg.orientation.w
+=======
+        self.curr_angularVelocity[0] = msg.angular_velocity.x
+        self.curr_angularVelocity[1] = msg.angular_velocity.y
+        self.curr_angularVelocity[2] = msg.angular_velocity.z
+
+        self.quanternion_read[0] = msg.orientation.x
+        self.quanternion_read[1] = msg.orientation.y
+        self.quanternion_read[2] = msg.orientation.z
+        self.quanternion_read[3] = msg.orientation.w
+
+>>>>>>> main
     def timeCallback(self):
-           self.quaternion_to_euler()
+        self.quaternion_to_euler()
+        self.angularAccelaration_pub(self.angularAceleration_cal())
+
+    def angularAceleration_cal(self)->list[float]:
+        angularAcc = [0.0, 0.0, 0.0]
+        for i in range(3):
+            angularAcc[i] = (self.curr_angularVelocity[i] - self.last_angularVelocity[i])/self.dt
+            self.last_angularVelocity[i] = self.curr_angularVelocity[i]
+        return angularAcc
+    
+    def angularAccelaration_pub(self, angularAcc:list[float])->None:
+        pub_data = Float64MultiArray()
+        pub_data.data = [angularAcc[0], angularAcc[1], angularAcc[2]]
+        self.pub_angularAccelaration.publish(pub_data)
+
     def quaternion_to_euler(self):
         """
         Convert quaternion to Euler angles (roll, pitch, yaw).

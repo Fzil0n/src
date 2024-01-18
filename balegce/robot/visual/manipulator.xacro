@@ -27,7 +27,11 @@
     </xacro:macro>
 
     <xacro:macro name="leg_collision">
+<<<<<<< HEAD
         <collision>
+=======
+        <collision name="leg">
+>>>>>>> main
             <origin xyz="${LEG_VISUAL['position']}" rpy="${LEG_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/leg.stl"/>
@@ -223,6 +227,7 @@
 
     <!-- Visual with dynamics propoties -->
     <xacro:macro name="balegce" params="">
+        <link name="end_leg"/>
         <link name="base"/>
 
         <link name="leg">
@@ -254,12 +259,20 @@
             <xacro:propeller_inertial />
             <xacro:propeller_2_collision />
         </link>
+       
 
+        <joint name="joint_end_leg" type="fixed">
+            <parent link="leg"/>
+            <child link="end_leg"/>
+            <origin xyz="0.0 0.0 -0.145" rpy="0.0 0.0 0.0"/>
+        </joint>
         <xacro:base_offset/>
         <xacro:joint_body/>
         <xacro:joint_wheel/>
         <xacro:joint_propeller_1/>
         <xacro:joint_propeller_2/>
+
+
 
     </xacro:macro>
 

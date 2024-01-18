@@ -1,6 +1,6 @@
 controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 1000  # Hz
 
     effort_controllers:
       type: effort_controllers/JointGroupEffortController
@@ -40,8 +40,12 @@ velocity_controllers:
 effort_controllers:
   ros__parameters:
     joints: 
+<<<<<<< HEAD
       - joint_wheel
       - leg
+=======
+      - joint_body
+>>>>>>> main
     command_interface: 
       - effort
     state_interface: 

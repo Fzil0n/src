@@ -3,6 +3,10 @@ imu:
   position: 0.0 0.0 0.027
   link: body
 
+contact:
+  orientation: 3.141592653589793 0.0 0.0
+  position: 0.0 0.0 0.0
+  link: leg
 # lidar:
 #   orientation: 0.0 0.0 0.0
 #   position: 0.5 0.0 0.2
