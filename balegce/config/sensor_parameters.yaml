@@ -3,22 +3,9 @@ imu:
   position: 0.0 0.0 0.027
   link: body
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 contact:
   orientation: 3.141592653589793 0.0 0.0
   position: 0.0 0.0 0.0
   link: leg
-=======
-=======
->>>>>>> parent of 6f0295d (update)
-# lidar:
-#   orientation: 0.0 0.0 0.0
-#   position: 0.5 0.0 0.2
-#   link: link_0
-# camera:
-#   orientation: 0.0 0.0 0.0
-#   position: 0.0 0.0 0.0
-#   link: end_effector
->>>>>>> parent of 6f0295d (update)
+
 
