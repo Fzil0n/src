@@ -1,15 +1,42 @@
 #!/usr/bin/python3
+<<<<<<< HEAD
+
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Float64MultiArray
+from geometry_msgs.msg import Twist, Wrench
+=======
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import Float64MultiArray, Float64
 from geometry_msgs.msg import Twist, Wrench
 from sensor_msgs.msg import Imu, JointState
 import math
+>>>>>>> main
 
 class controller(Node):
     def __init__(self):
         super().__init__('controller')
 
+<<<<<<< HEAD
+        # Create Timer
+        self.create_timer(0.01, self.timerCallback)
+
+        # Create publisher
+        self.pub_posCommand     = self.create_publisher(Float64MultiArray, "/position_controllers/commands", 10)
+        self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
+        self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
+        self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
+
+        # Create Subscriber
+        self.create_subscription(Twist, 'euler_angles', self.orientation_callback, 10)
+
+        # Variables
+        self.orientation = [0.0, 0.0, 0.0]
+    
+    # Methods ===========================================
+    def wrenchPub(self, publisher, force, torque):
+=======
         #--|Create Timer|--#
         self.create_timer(0.01, self.timerCallback)
 
@@ -61,6 +88,7 @@ class controller(Node):
         self.curr_angularVelocity[2] = msg.angular_velocity.z
 
     def wrenchPub(self, publisher, force:list[float], torque:list[float])->None:
+>>>>>>> main
         msg = Wrench()
         # force assignment
         msg.force.x = force[0]
@@ -75,6 +103,30 @@ class controller(Node):
     
     # Timer Callback -----------------------------
     def timerCallback(self):
+<<<<<<< HEAD
+        # position
+        pubPos = Float64MultiArray()
+        pubPos.data = [0.0]
+        # velocity
+        pubVelo = Float64MultiArray()
+        pubVelo.data = [0.0, 0.0]
+        # publish
+        self.pub_posCommand.publish(pubPos)
+        self.pub_veloCommand.publish(pubVelo)
+
+    # Subscriber Callback ------------------------
+    def orientation_callback(self, msg):
+        self.orientation[0] = msg.angular.roll_x
+        self.orientation[1] = msg.angular.pitch_y
+        self.orientation[2] = msg.angular.yaw_z
+
+    # Controller ---------------------------------
+    def controller(self):
+        # orientation error
+        diff_orient_x = 0 - self.orientation[0]
+        diff_orient_y = 0 - self.orientation[1]
+        diff_orient_z = 0 - self.orientation[2]
+=======
         controller_output = self.velocityController()
         # --velocity--
         pubVelo = Float64MultiArray() 
@@ -159,6 +211,7 @@ class controller(Node):
         propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
         output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
+>>>>>>> main
         
 
 def main(args=None):

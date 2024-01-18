@@ -8,15 +8,28 @@ controller_manager:
     velocity_controllers:
       type: velocity_controllers/JointGroupVelocityController
 
+    position_controllers:
+      type: position_controller/JointGroupPositionController
+
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
       
+position_controllers:
+  ros__parameters:
+    joints: 
+      - leg
+    command_interface: 
+      - position
+    state_interface: 
+      - position
+      - velocity
+      - effort
+
 velocity_controllers:
   ros__parameters:
     joints: 
       - joint_wheel
-      - joint_propeller_1
-      - joint_propeller_2
+      - leg
     command_interface: 
       - velocity
     state_interface: 
@@ -27,7 +40,12 @@ velocity_controllers:
 effort_controllers:
   ros__parameters:
     joints: 
+<<<<<<< HEAD
+      - joint_wheel
+      - leg
+=======
       - joint_body
+>>>>>>> main
     command_interface: 
       - effort
     state_interface: 

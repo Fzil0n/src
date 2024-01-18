@@ -12,7 +12,7 @@
     <xacro:include filename="$(find ${description_package})/robot/visual/sensor.xacro"/>
 
     <xacro:balegce/>
-    <!-- attrach sensor -->
+    <!-- attach sensor -->
     <xacro:sensor_link/>
 
 

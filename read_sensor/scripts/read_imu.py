@@ -7,15 +7,19 @@ from geometry_msgs.msg import Twist
 import numpy as np
 from std_msgs.msg import Float64MultiArray
 
-class DummyNode(Node):
+class read_imu_node(Node):
     # ========Constructor===========
     def __init__(self):
         super().__init__('read_imu_node')
         self.eulerAngles = Twist()
+<<<<<<< HEAD
+        self.quaternion_read = [0, 0, 0, 0]
+=======
         self.quanternion_read = [0.0, 0.0, 0.0, 0.0]
         self.curr_angularVelocity = [0.0, 0.0, 0.0]
         self.last_angularVelocity   = [0.0, 0.0, 0.0]
         self.dt = 0.001
+>>>>>>> main
         # create subscriber
         self.sub_imu = self.create_subscription(Imu,"/imu",self.imu_callback,10)
         # create publisher
@@ -26,6 +30,12 @@ class DummyNode(Node):
 
     #========Class's methods=========
     def imu_callback(self,msg):
+<<<<<<< HEAD
+        self.quaternion_read[0] = msg.orientation.x
+        self.quaternion_read[1] = msg.orientation.y
+        self.quaternion_read[2] = msg.orientation.z
+        self.quaternion_read[3] = msg.orientation.w
+=======
         self.curr_angularVelocity[0] = msg.angular_velocity.x
         self.curr_angularVelocity[1] = msg.angular_velocity.y
         self.curr_angularVelocity[2] = msg.angular_velocity.z
@@ -35,6 +45,7 @@ class DummyNode(Node):
         self.quanternion_read[2] = msg.orientation.z
         self.quanternion_read[3] = msg.orientation.w
 
+>>>>>>> main
     def timeCallback(self):
         self.quaternion_to_euler()
         self.angularAccelaration_pub(self.angularAceleration_cal())
@@ -61,7 +72,7 @@ class DummyNode(Node):
         Returns:
         - None
         """
-        x, y, z, w = self.quanternion_read
+        x, y, z, w = self.quaternion_read
 
         # roll (x-axis rotation)
         t0 = +2.0 * (w * x + y * z)
@@ -87,7 +98,7 @@ class DummyNode(Node):
     
 def main(args=None):
     rclpy.init(args=args)
-    node = DummyNode()
+    node = read_imu_node()
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

@@ -27,7 +27,11 @@
     </xacro:macro>
 
     <xacro:macro name="leg_collision">
+<<<<<<< HEAD
+        <collision>
+=======
         <collision name="leg">
+>>>>>>> main
             <origin xyz="${LEG_VISUAL['position']}" rpy="${LEG_VISUAL['orientation']}"/>
             <geometry>
                 <mesh filename="file://$(find ${description_package})/meshes/leg.stl"/>
