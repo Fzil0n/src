@@ -49,12 +49,14 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
         )
+        )
     robot_spawner = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
         output='screen',
         arguments=[
             '-topic', '/robot_description',
+            '-entity', 'baLEGce'
             '-entity', 'baLEGce'
             ]
         )
@@ -157,5 +159,4 @@ def generate_launch_description():
     launch_description.add_action(velocity_controllers)
     launch_description.add_action(input)
     launch_description.add_action(controller)
->>>>>>> parent of 6f0295d (update)
     return launch_description
