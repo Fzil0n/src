@@ -118,13 +118,13 @@ Contreoller gain can config as launch configulation
 2.) Place "src" in the workspace
 
 3.) Check in src will have 7 file :
-    - balegce
-    - balegce_controller
-    - balegce_gazebo
-    - input
-    - input_interfaces
-    - moter_control
-    - read_sensor
+- balegce
+- balegce_controller
+- balegce_gazebo
+- input
+- input_interfaces
+- moter_control
+- read_sensor
 
 4.) Build "src" in your workspace.
 ```
@@ -142,7 +142,7 @@ ros2 launch balegce display.launch.py
 # Testing out turtlesim_control in **Gazebo**
 - Terminal 1: Run launch file in terminal
 ```
-ros2 launch balegce spawn.launch.py
+ros2 launch balegce_gazebo spawn.launch.py
 ```
 
 # Schematics of System
