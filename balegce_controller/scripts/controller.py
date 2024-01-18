@@ -17,8 +17,8 @@ class controller(Node):
         self.pub_veloCommand    = self.create_publisher(Float64MultiArray, "/velocity_controllers/commands", 10)
         self.pub_forceR         = self.create_publisher(Wrench, "/propeller_r/force", 10)
         self.pub_forceL         = self.create_publisher(Wrench, "/propeller_l/force", 10)
-        self.pub_orien_error    = self.create_publisher(Float64MultiArray, "/orien_error", 10)
-        self.pub_velo_error     = self.create_publisher(Float64MultiArray, "/velo_error", 10)
+        self.pub_orien_error          = self.create_publisher(Float64MultiArray, "/orien_error", 10)
+        self.pub_velo_error          = self.create_publisher(Float64MultiArray, "/velo_error", 10)
         
         #--|Create Subscriber|--#
         self.create_subscription(Twist, 'euler_angles', self.curr_orientation_callback, 10)
@@ -78,15 +78,16 @@ class controller(Node):
         controller_output = self.velocityController()
         # --velocity--
         pubVelo = Float64MultiArray() 
-        pubVelo.data = controller_output   # wheel prop1(left) prop2(right)
-        # --generate trust from velocity--
-        propellerL_force = self.trustGenerator(speed=-controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
+        pubVelo.data = controller_output   # leg(body) wheel prop1(left) prop2(right)
+        # generate trust from velocity
+        propellerL_force = self.trustGenerator(speed=controller_output[1], forceConstant=self.get_parameter('forceConstant').value)
         propellerR_force = self.trustGenerator(speed=controller_output[2], forceConstant=self.get_parameter('forceConstant').value)
-        # --publish--
+        # publish
         self.wrenchPub(self.pub_forceL, force=[0.0, 0.0, -propellerL_force], torque=[0.0, 0.0, 0.0])
         self.wrenchPub(self.pub_forceR, force=[0.0, 0.0, -propellerR_force], torque=[0.0, 0.0, 0.0])
         # self.pub_posCommand.publish(pubPos)
         self.pub_veloCommand.publish(pubVelo)
+        pass
 
     def trustGenerator(self, speed, forceConstant):
         return forceConstant*speed*speed
@@ -143,13 +144,13 @@ class controller(Node):
         self.pub_velo_error.publish(pub_velo_error)   
 
     def velocityController(self)->list[float]:
-        error_orien_roll  = self.referenceAngles[0] - self.curr_orientation[0]
+        error_orien_roll = self.referenceAngles[0] - self.curr_orientation[0]
         error_orien_pitch = self.referenceAngles[1] - self.curr_orientation[1]
         error_orien_yaw   = self.referenceAngles[2] - self.curr_orientation[2]
 
-        error_velo_roll  = self.referenceOmega[0] - self.curr_angularVelocity[0]
+        error_velo_roll = self.referenceOmega[0] - self.curr_angularVelocity[0]
         error_velo_pitch = self.referenceOmega[1] - self.curr_angularVelocity[1]
-        error_velo_yaw   = self.referenceOmega[2] - self.curr_angularVelocity[2]
+        error_velo_yaw = self.referenceOmega[2] - self.curr_angularVelocity[2]
         
         # publish error for debugging
         self.orien_error_pub(error_orien_roll, error_orien_pitch, error_orien_yaw)

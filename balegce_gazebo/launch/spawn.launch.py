@@ -106,15 +106,10 @@ def generate_launch_description():
         ]
     )
 
-    leg_controller = Node(
-        package = "balegce_controller",
-        executable = "leg_controller.py"
-    )
-
     event_handler = RegisterEventHandler(
         OnProcessExit(
             target_action = joint_state_broadcaster,
-            on_exit=[read_imu, controller_spawner, controller, leg_controller]
+            on_exit=[read_imu, controller_spawner, controller]
         )
     )
 

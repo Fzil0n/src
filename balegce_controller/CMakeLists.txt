@@ -27,7 +27,6 @@ ament_python_install_package(${PROJECT_NAME})
 
 # Install Python executables
 install(PROGRAMS
-  scripts/leg_controller.py
   scripts/controller.py
   DESTINATION lib/${PROJECT_NAME}
 )

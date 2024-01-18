@@ -65,6 +65,24 @@
             </plugin>
             </sensor>
         </gazebo>    
+
+        <!-- floor contact -->
+        <gazebo reference="leg">
+            <sensor name="contact_sensor" type="contact">
+                <always_on>true</always_on>
+                <update_rate>10.0</update_rate>
+                <contact>
+                    <collision>leg_collision</collision>
+                </contact>
+                <plugin name="contact_plugin" filename="libgazebo_ros_bumper.so">
+                    <ros>
+                        <remapping>bumper_states:=contact</remapping>
+                    </ros>
+                    <frame_name>leg</frame_name>
+                </plugin>
+            </sensor>
+        </gazebo>
+
     </xacro:macro>
     
 </robot>
