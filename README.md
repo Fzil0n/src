@@ -10,6 +10,9 @@ This project is part of the FRA501 Robotics DevOps course for third-year student
 ![image](https://github.com/TanawatPawanta/src/assets/119843578/24f40170-1477-4297-b6b8-99b757d27798)
 
 # Monopedal Jumping Robot
+![image](https://github.com/TanawatPawanta/BaLEGce/assets/119843578/f78eff2a-5bc5-424f-b59f-905da474b976)
+The orientation of the Monopedal Robot is defined using ZXY Euler angles. The leg mechanism is positioned in the X-Z plane, with the leg's extension-contraction aligned along the Z-axis, intersecting the Center of Gravity (CG) of the robot. The Reaction Wheels in the tail are parallel to the Y-axis, enabling control of the robot's pitch. Additionally, Thrusters are pointing in the +Y direction, oriented upwards in the +Z direction. They are symmetrically positioned along the Z-axis on the plane parallel to the X-axis. The combined force from both thrusters generates a moment along the X-axis, allowing control of the Roll. Meanwhile, the difference in force produces a moment along the Z-axis, enabling control of the Yaw. With these features, the robot can move freely in all six axes.
+
 ![image](https://github.com/TanawatPawanta/BaLEGce/assets/119843578/98602a57-ede2-49ee-b536-92f153c84349)
 have 5 parts of model
 - body
@@ -125,6 +128,7 @@ Is a file that describes the gazebo’s world properties such as Sun movement an
 - controller.py
 Orientation conrtol diagram
 ![orientation_control_diagram drawio](https://github.com/TanawatPawanta/BaLEGce/assets/83177015/431b67cc-640c-43f2-bfe0-e7150de67a43)
+
 Contreoller gain can config as launch configulation 
 - leg_controller.py
 This file check leg contect with ground and control leg of the model
@@ -165,14 +169,7 @@ ros2 launch balegce_gazebo spawn.launch.py
 
 
 # Schematics of System
-![Untitled Diagram drawio](https://github.com/TanawatPawanta/src/assets/119843578/6c28736e-a969-4754-8d2b-3aaeefbd6f7b)
-- Command Line Interface : Fill in the input, which consists of the angle and distance.
-
-## Package
-- Input Interface : Package to enable input from the command line
-- Orientation Controller : Package for controlling the orientation of a robot.
-- Leg Length Controller : Package for controlling the Leg Length of a robot.
-- Gazebo : Simulation Movement
+![image](https://github.com/TanawatPawanta/BaLEGce/assets/119843578/0af87688-bae7-4fd0-9f2f-c765c9003816)
 
 # Node
 - /contact_plugin
