@@ -49,17 +49,17 @@ class controller(Node):
         self.referenceOmega = [0.0, 0.0, 0.0]  
         self.referenceLegPosition = 0.0
 
-        self.threshold_orien = 0.002 #1.4591559 degrees
+        self.threshold_orien = 0.02 #1.4591559 degrees
         self.threshold_velo = 0.002
 
-        self.orien_roll_last = 0
-        self.orien_roll_llast = 0
+        self.error_orien_roll_last = 0
+        self.error_orien_roll_llast = 0
 
-        self.orien_pitch_last = 0
-        self.orien_pitch_llast = 0
+        self.error_orien_pitch_last = 0
+        self.error_orien_pitch_llast = 0
 
-        self.orien_yaw_last = 0
-        self.orien_yaw_llast = 0
+        self.error_orien_yaw_last = 0
+        self.error_orien_yaw_llast = 0
         
         self.roll_out = 0
         self.pitch_out = 0
@@ -117,36 +117,42 @@ class controller(Node):
         self.curr_orientation[2] = msg.angular.z
 
     # Controller ---------------------------------
-    def roll_PDcontroller(self,error:float, error_dot:float, threshold:float)->float:
+    def roll_PDcontroller(self,error:float, threshold:float)->float:
         if(abs(error) >= threshold):
             Kp_roll    = self.get_parameter('Kp_roll').value
             Kd_roll    = self.get_parameter('Kd_roll').value
-            out = Kp_roll*error + Kd_roll*error_dot
+            self.roll_out += (Kp_roll + Kd_roll)*error - (Kp_roll + 2*Kd_roll)*self.error_orien_roll_last - Kd_roll*self.error_orien_roll_llast
         else:
-            out = 0.0
-        return out
+            self.roll_out = 0.0
+        self.error_orien_roll_last = error
+        self.error_orien_roll_llast = self.error_orien_roll_last
+        return self.roll_out
     
-    def pitch_PDcontroller(self, error:float, error_dot:float, threshold: float)->float:
+    def pitch_PDcontroller(self, error:float, threshold: float)->float:
         if(abs(error) >= threshold):
             Kp_pitch    = self.get_parameter('Kp_pitch').value
             Kd_pitch    = self.get_parameter('Kd_pitch').value
-            out = Kp_pitch*error + Kd_pitch*error_dot
+            self.pitch_out += (Kp_pitch + Kd_pitch)*error - (Kp_pitch + 2*Kd_pitch)*self.error_orien_pitch_last - Kd_pitch*self.error_orien_pitch_llast
         else:
-            out = 0.0
-        return out
+            self.pitch_out = 0.0
+        self.error_orien_pitch_last = error
+        self.error_orien_pitch_llast = self.error_orien_pitch_last
+        return self.pitch_out
     
-    def yaw_PDcontroller(self, error:float, error_dot:float, threshold:float)->float:
+    def yaw_PDcontroller(self, error:float, threshold:float)->float:
         if(abs(error) >= threshold):
             Kp_yaw      = self.get_parameter('Kp_yaw').value
             Kd_yaw      = self.get_parameter('Kd_yaw').value
-            out = Kp_yaw*error + Kd_yaw*error_dot
+            self.yaw_out += (Kp_yaw + Kd_yaw)*error - (Kp_yaw + 2*Kd_yaw)*self.error_orien_yaw_last - Kd_yaw*self.error_orien_yaw_llast
         else:
-            out =  0.0
-        return out
+            self.yaw_out = 0.0
+        self.error_orien_yaw_last = error
+        self.error_orien_yaw_llast = self.error_orien_yaw_last
+        return self.yaw_out
     
-    def propeller_velocity_PDController(self, error_pitch:float, error_yaw:float, error_pitch_dot:float, error_yaw_dot:float)->list[float]:
-        pitch_command   = self.pitch_PDcontroller(error_pitch, error_pitch_dot, self.threshold_velo)
-        yaw_command     = self.yaw_PDcontroller(error_yaw, error_yaw_dot, self.threshold_orien)
+    def propeller_velocity_PDController(self, error_pitch:float, error_yaw:float)->list[float]:
+        pitch_command   = self.pitch_PDcontroller(error_pitch, self.threshold_velo)
+        yaw_command     = self.yaw_PDcontroller(error_yaw, self.threshold_orien)
         propellerR_velo = pitch_command + yaw_command  
         propellerL_velo = pitch_command - yaw_command
         return [propellerL_velo, propellerR_velo]
@@ -174,8 +180,8 @@ class controller(Node):
         self.orien_error_pub(error_orien_roll, error_orien_pitch, error_orien_yaw)
         self.velo_error_pub(error_velo_roll, error_velo_pitch, error_velo_yaw)
 
-        wheel_velo =  self.roll_PDcontroller(error=error_velo_roll, error_dot=-self.curr_angularAccelration[0], threshold=self.threshold_orien)
-        propeller_velo = self.propeller_velocity_PDController(error_velo_pitch, error_orien_yaw, -self.curr_angularAccelration[1], -self.curr_angularVelocity[2])    
+        wheel_velo =  self.roll_PDcontroller(error=error_orien_roll, threshold=self.threshold_orien)
+        propeller_velo = self.propeller_velocity_PDController(error_orien_pitch, error_orien_yaw)    
         output = [-wheel_velo, -propeller_velo[0], propeller_velo[1]]
         return output
         
