@@ -11,11 +11,9 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
 
 def generate_launch_description():
-    # Launch arguments
-    Kp_leg_launch_arg = DeclareLaunchArgument('Kp_leg', default_value='0.0',description="leg's Kp controller gain : float")
-    Kp_leg = LaunchConfiguration('Kp_leg')
 
-    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='0.0',description="roll's Kp controller gain : float")
+    # Launch arguments
+    Kp_roll_launch_arg = DeclareLaunchArgument('Kp_roll', default_value='21.0',description="roll's Kp controller gain : float")
     Kp_roll = LaunchConfiguration('Kp_roll')
 
     Kp_pitch_launch_arg = DeclareLaunchArgument('Kp_pitch', default_value='0.0',description="pitch's Kp controller gain : float")
@@ -24,12 +22,10 @@ def generate_launch_description():
     Kp_yaw_launch_arg = DeclareLaunchArgument('Kp_yaw', default_value='0.0',description="yaw's Kp controller gain : float")
     Kp_yaw = LaunchConfiguration('Kp_yaw')
 
-    Kd_leg_launch_arg = DeclareLaunchArgument('Kd_leg', default_value='0.0',description="leg's Kd controller gain : float")
-    Kd_leg = LaunchConfiguration('Kd_leg')
-
     Kd_roll_launch_arg = DeclareLaunchArgument('Kd_roll', default_value='0.0',description="roll's Kd controller gain : float")
     Kd_roll = LaunchConfiguration('Kd_roll')
 
+    Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.0',description="pitch's Kd controller gain : float")
     Kd_pitch_launch_arg = DeclareLaunchArgument('Kd_pitch', default_value='0.0',description="pitch's Kd controller gain : float")
     Kd_pitch = LaunchConfiguration('Kd_pitch')
     
@@ -51,11 +47,22 @@ def generate_launch_description():
         parameters = [{'robot_description':ros_description}]
     )
 
+    # world 
+    world_file_name = 'balegce_world.world'
+    world = os.path.join(get_package_share_directory(
+        'balegce_gazebo'), 'worlds', world_file_name)
+    
+    declare_world_fname = DeclareLaunchArgument(
+        'world_fname', default_value = world, description='absolute path of gazebo world file')
+    
+    world_fname = LaunchConfiguration('world_fname')
+
     # --|Start Gazebo server and client|--#
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
-        )
+        launch_arguments={'world': world_fname}.items()
+    )
     
     # --|Nodes|--#
     robot_spawner = Node(
@@ -90,11 +97,9 @@ def generate_launch_description():
         package = "balegce_controller",
         executable = "controller.py",
         parameters=[
-            {'Kp_leg':Kp_leg},
             {'Kp_roll':Kp_roll},
             {'Kp_pitch':Kp_pitch},
             {'Kp_yaw':Kp_yaw},
-            {'Kd_leg':Kd_leg},
             {'Kd_roll':Kd_roll},
             {'Kd_pitch':Kd_pitch},
             {'Kd_yaw':Kd_yaw},
@@ -102,26 +107,32 @@ def generate_launch_description():
         ]
     )
 
+    leg_controller = Node(
+        package = "balegce_controller",
+        executable = "leg_controller.py"
+    )
+
     event_handler = RegisterEventHandler(
         OnProcessExit(
             target_action = joint_state_broadcaster,
-            on_exit=[read_imu, controller_spawner, controller]
+            on_exit=[read_imu, controller_spawner, controller, leg_controller]
         )
     )
 
     launch_description = LaunchDescription()
-    launch_description.add_action(Kp_leg_launch_arg)
+
     launch_description.add_action(Kp_roll_launch_arg)
     launch_description.add_action(Kp_pitch_launch_arg)
     launch_description.add_action(Kp_yaw_launch_arg)
 
     launch_description.add_action(Kd_roll_launch_arg)
-    launch_description.add_action(Kd_leg_launch_arg)
     launch_description.add_action(Kd_pitch_launch_arg)
     launch_description.add_action(Kd_yaw_launch_arg)
     launch_description.add_action(forceConstant_launch_arg)
     
     launch_description.add_action(robot_state_publisher)
+
+    launch_description.add_action(declare_world_fname)
     launch_description.add_action(gazebo)
     launch_description.add_action(robot_spawner)
     launch_description.add_action(joint_state_broadcaster)
