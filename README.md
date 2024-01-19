@@ -155,13 +155,13 @@ colcon build
 source install/setup.bash
 ```
 
-# Testing out turtlesim_control in **Rviz**
+# Testing out BaLEGce (monopodal jumping robot) in **Rviz**
 - Terminal 1: Run launch file in terminal
 ```
 ros2 launch balegce display.launch.py
 ```
 
-# Testing out turtlesim_control in **Gazebo**
+# Testing out BaLEGce (monopodal jumping robot) in **Gazebo**
 - Terminal 1: Run launch file in terminal
 ```
 ros2 launch balegce_gazebo spawn.launch.py
@@ -193,6 +193,8 @@ ros2 launch balegce_gazebo spawn.launch.py
 
 # Our Team
 Napassorn Techasombooranakit 64340500035
-wasupol Hengsritawat 64340500049
+
+Wasupol Hengsritawat 64340500049
+
 Tanawat Pawanta 64340500061
 
