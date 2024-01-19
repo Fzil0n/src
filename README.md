@@ -102,14 +102,32 @@ The file will use the sensor plugin from "libgazebo_ros_imu_sensor.so" and defin
 This file functions to convert the measured values from the IMU into roll, pitch, and yaw.
 
 ### 4. launch
--spawn.launch.py
-## balegce_controller
-- controller.py
+- spawn.launch.py
+This file displays(spawn) the model which has all links and joints including the sensor link and shows behavior of movement in Gazebo.
 
+### 5. worlds
+- balegce_world.world
+Is a file that describes the gazebo’s world properties such as Sun movement and Friction. In this project, use friction between ground_plane and link of model.
+```
+<friction>
+  <ode>
+    <mu>3000</mu>
+    <mu2>3000</mu2>
+  </ode>
+  <torsional>
+    <ode/>
+  </torsional>
+</friction>
+```
+
+## balegce_controller
+### 1. scripts
+- controller.py
 Orientation conrtol diagram
 ![orientation_control_diagram drawio](https://github.com/TanawatPawanta/BaLEGce/assets/83177015/431b67cc-640c-43f2-bfe0-e7150de67a43)
 Contreoller gain can config as launch configulation 
-
+- leg_controller.py
+This file check leg contect with ground and control leg of the model
 
 # Installation
 
@@ -145,9 +163,11 @@ ros2 launch balegce display.launch.py
 ros2 launch balegce_gazebo spawn.launch.py
 ```
 
+
 # Schematics of System
 ![Untitled Diagram drawio](https://github.com/TanawatPawanta/src/assets/119843578/6c28736e-a969-4754-8d2b-3aaeefbd6f7b)
 - Command Line Interface : Fill in the input, which consists of the angle and distance.
+
 ## Package
 - Input Interface : Package to enable input from the command line
 - Orientation Controller : Package for controlling the orientation of a robot.
@@ -155,6 +175,27 @@ ros2 launch balegce_gazebo spawn.launch.py
 - Gazebo : Simulation Movement
 
 # Node
+- /contact_plugin
+- /controller
+- /controller_manager
+- /effort_controllers
+- /gazebo
+- /gazebo_ros2_control_plugin
+- /imu_plugin
+- /joint_body_state_publisher
+- /joint_propeller_1_state_publisher
+- /joint_propeller_2_state_publisher
+- /joint_state_broadcaster
+- /joint_wheel_state_publisher
+- /leg_controller
+- /propeller_l/gazebo_ros_force
+- /propeller_r/gazebo_ros_force
+- /read_imu_node
+- /robot_state_publisher
+- /velocity_controllers
 
-# Service
+# Our Team
+Napassorn Techasombooranakit 64340500035
+wasupol Hengsritawat 64340500049
+Tanawat Pawanta 64340500061
 
