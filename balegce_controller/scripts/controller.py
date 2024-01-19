@@ -27,12 +27,10 @@ class controller(Node):
 
         #--|ROS Parameters|--#
         # Kp controller gain
-        self.declare_parameter('Kp_leg',0.0)
         self.declare_parameter('Kp_roll',0.0)
         self.declare_parameter('Kp_pitch',0.0)
         self.declare_parameter('Kp_yaw',0.0)
         # Kd controller gain
-        self.declare_parameter('Kd_leg',0.0)
         self.declare_parameter('Kd_roll',0.0)
         self.declare_parameter('Kd_pitch',0.0)
         self.declare_parameter('Kd_yaw',0.0)
