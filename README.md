@@ -192,9 +192,7 @@ ros2 launch balegce_gazebo spawn.launch.py
 - /velocity_controllers
 
 # Our Team
-Napassorn Techasombooranakit 64340500035
-
-Wasupol Hengsritawat 64340500049
-
-Tanawat Pawanta 64340500061
+- Napassorn Techasombooranakit 64340500035
+- Wasupol Hengsritawat 64340500049
+- Tanawat Pawanta 64340500061
 
